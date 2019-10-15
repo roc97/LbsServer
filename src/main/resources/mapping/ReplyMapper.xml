@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.roc.mapper.ReplyMapper">
+    <resultMap id="BaseResultMap" type="Reply">
+        <id column="reply_id" property="replyId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="experience_id" property="experienceId" jdbcType="INTEGER"/>
+        <result column="like_num" property="likeNum" jdbcType="INTEGER"/>
+        <result column="unlike_num" property="unlikeNum" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="main_reply_id" property="mainReplyId" jdbcType="INTEGER"/>
+        <result column="parent_user_id" property="parentUserId" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="head_image" property="headImage" jdbcType="VARCHAR"/>
+        <result column="parent_user_name" property="parentUserName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="columns">
+        a.reply_id,
+        a.user_id,
+        a.experience_id,
+        a.like_num,
+        a.unlike_num,
+        a.create_time,
+        a.content,
+        a.main_reply_id,
+        a.parent_user_id,
+        b.user_name,
+        b.sex,
+        b.head_image
+    </sql>
+
+    <insert id="insertPojo" parameterType="Reply">
+        insert into reply(
+        user_id,
+        experience_id,
+        like_num,
+        unlike_num,
+        content,
+        main_reply_id,
+        parent_user_id)
+        values (
+        #{userId},
+        #{experienceId},
+        #{likeNum},
+        #{unlikeNum},
+        #{content},
+        #{mainReplyId},
+        #{parentUserId})
+    </insert>
+
+    <update id="updateLikeNumAndUnlikeNum">
+        update reply set
+       <choose>
+           <when test="likeNum==1">
+               like_num=like_num+1
+           </when>
+           <when test="likeNum==-1">
+               like_num=like_num-1
+           </when>
+           <when test="unlikeNum==1">
+               unlike_num=unlike_num+1
+           </when>
+           <when test="unlikeNum==-1">
+               unlike_num=unlike_num-1
+           </when>
+       </choose>
+       where reply_id=#{replyId}
+    </update>
+
+    <select id="getByExperienceId" resultMap="BaseResultMap">
+        select <include refid="columns"/>
+        from reply a
+        left join sys_user b
+        on a.user_Id=b.user_Id
+        where experience_id=#{experienceId}
+        and main_reply_id='0'
+    </select>
+
+    <select id="getByMainReplyId" resultMap="BaseResultMap">
+        select <include refid="columns"/>,b1.user_name as parent_user_name
+        from reply a
+        left join sys_user b
+        on a.user_id=b.user_id
+        left join sys_user b1
+        on a.parent_user_id=b1.user_id
+        where main_reply_id=#{mainRepluId}
+        and main_reply_id!='0'
+    </select>
+
+    <delete id="deleteMainOrGeneralReply">
+        delete from reply
+        where reply_id=#{replyId}
+        and user_id=#{userId}
+    </delete>
+
+    <delete id="CascadeDelete">
+        delete from reply
+        where main_reply_id=#{mainReplyId}
+    </delete>
+</mapper>

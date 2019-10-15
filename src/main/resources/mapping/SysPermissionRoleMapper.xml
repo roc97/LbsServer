@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roc.mapper.SysPermissionRoleMapper">
+    <resultMap id="BaseResultMap" type="SysPermissionRole">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="role_id" property="roleId" jdbcType="INTEGER"/>
+        <result column="permission_id" property="permissionId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insertPojo">
+        insert into sys_permission_role(
+        role_id,
+        permission_id
+        ) values (
+        #{roleId},
+        #{permissionId}
+        )
+    </insert>
+
+    <select id="getPojo" resultMap="BaseResultMap">
+        select * from sys_permission_role
+        where role_id=#{roleId}
+        and permission_id=#{permissionId}
+    </select>
+
+    <select id="getByRoleId" resultMap="BaseResultMap">
+        select * from sys_permission_role
+        where role_id=#{roleId}
+    </select>
+
+    <select id="getByPermissionId" resultMap="BaseResultMap">
+        select * from sys_permission_role
+        where permission_id=#{permissionId}
+    </select>
+
+    <delete id="deletePojo">
+        delete from sys_permission_role
+        where role_id=#{roleId}
+        and permission_id=#{permissionId}
+    </delete>
+</mapper>

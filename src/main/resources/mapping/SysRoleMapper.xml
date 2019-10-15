@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roc.mapper.SysRoleMapper">
+    <resultMap id="BaseResultMap" type="SysRole">
+        <id column="role_id" property="roleId" jdbcType="INTEGER"/>
+        <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insertPojo" parameterType="SysRole">
+        insert into sys_role(role_name)
+        values(#{roleName})
+    </insert>
+
+    <update id="updatePojo" parameterType="SysRole">
+        update sys_role set
+        role_name=#{roleName}
+        where role_id=#{roleId}
+    </update>
+
+    <select id="getPojo" resultMap="BaseResultMap">
+        select * from sys_role where role_id=#{roleId}
+    </select>
+
+    <delete id="deletePojo">
+        delete from sys_role where role_id=#{id}
+    </delete>
+
+</mapper>

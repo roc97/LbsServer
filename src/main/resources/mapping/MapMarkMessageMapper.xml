@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roc.mapper.MapMarkMessageMapper">
+    <resultMap id="BaseResultMap" type="MapMarkMessage">
+        <id column="mark_id" property="markId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="lat" property="lat" jdbcType="DOUBLE"/>
+        <result column="lng" property="lng" jdbcType="DOUBLE"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="columns">
+      a.mark_id,
+      a.user_id,
+      a.lat,
+      a.lng,
+      a.title,
+      a.content,
+      a.status,
+      a.create_time,
+      b.sex,
+      b.user_name
+    </sql>
+
+    <insert id="insertPojo" parameterType="MapMarkMessage">
+        insert into map_mark_message(
+        user_id,
+        lat,
+        lng,
+        title,
+        content,
+        status
+        ) values (
+        #{userId},
+        #{lat},
+        #{lng},
+        #{title},
+        #{content},
+        #{status}
+        )
+    </insert>
+
+    <select id="getAllList" resultMap="BaseResultMap">
+        select <include refid="columns"/>
+        from map_mark_message a
+        left join sys_user b
+        on a.user_id=b.user_id
+    </select>
+
+    <select id="getListByStatus" resultMap="BaseResultMap">
+        select <include refid="columns"/>
+        from map_mark_message a
+        left join sys_user b
+        on a.user_id=b.user_id
+        where status=#{status}
+    </select>
+
+    <select id="getListByUserId" resultMap="BaseResultMap">
+        select <include refid="columns"/>
+        from map_mark_message a
+        left join sys_user b
+        on a.user_id=b.user_id
+        where a.user_id=#{userId}
+    </select>
+
+    <select id="getListByUserIdAndStatus" resultMap="BaseResultMap">
+        select <include refid="columns"/>
+        from map_mark_message a
+        left join sys_user b
+        on a.user_id=b.user_id
+        where a.user_id=#{userId}
+        and status=#{status}
+    </select>
+
+    <select id="getListByMatchTitle" resultMap="BaseResultMap">
+        select <include refid="columns"/>
+        from map_mark_message a
+        left join sys_user b
+        on a.user_id=b.user_id
+        where title like "%"#{title}"%"
+    </select>
+
+    <update id="updatePojo">
+        update map_mark_message set
+        status=#{status}
+        where mark_id=#{markId}
+    </update>
+
+    <delete id="deletePojo">
+        delete from map_mark_message
+        where mark_id=#{markId}
+    </delete>
+</mapper>

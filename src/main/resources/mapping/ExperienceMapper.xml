@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roc.mapper.ExperienceMapper">
+    <resultMap id="BaseResultMap" type="Experience">
+        <id column="experience_id" property="experienceId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="like_num" property="likeNum" jdbcType="INTEGER"/>
+        <result column="unlike_num" property="unlikeNum" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insertPojo" parameterType="Experience">
+        insert into experience(
+        user_id,
+        title,
+        content,
+        like_num,
+        unlike_num
+        ) values (
+        #{userId},
+        #{title},
+        #{content},
+        #{likeNum},
+        #{unlikeNum}
+        )
+    </insert>
+    
+    <select id="getPojo" resultMap="BaseResultMap">
+        select * from experience
+        where experience_id=#{id}
+    </select>
+
+    <select id="getAllList" resultMap="BaseResultMap">
+          select * from experience
+    </select>
+
+    <select id="getListByTitle" resultMap="BaseResultMap">
+         select * from experience
+         where title like "%"#{title}"%"
+    </select>
+
+    <select id="getListByUserId" resultMap="BaseResultMap">
+        select * from experience
+        where user_id=#{userId}
+    </select>
+
+    <update id="updatePojo" parameterType="Experience">
+        update experience set
+        <choose>
+            <when test="likeNum==1">
+                like_num=like_num+1
+            </when>
+            <when test="likeNum==-1">
+                like_num=like_num-1
+            </when>
+            <when test="unlikeNum==1">
+                unlike_num=unlike_num+1
+            </when>
+            <when test="unlikeNum==-1">
+                unlike_num=unlike_num-1
+            </when>
+        </choose>
+        where experience_id=#{experienceId}
+    </update>
+
+    <delete id="deletePojo">
+        delete from experience
+        where experience_id=#{id}
+    </delete>
+</mapper>

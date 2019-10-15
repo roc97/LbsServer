@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roc.mapper.UserAttentionMapper">
+    <resultMap id="BaseResultMap" type="UserAttention">
+        <id column="attention_id" property="attentionId" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="user_attention_id" property="userAttentionId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="head_image" property="headImage" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="columns">
+        a.attention_id,
+        a.user_id,
+        a.user_attention_id,
+        a.create_time,
+        b.user_name,
+        b.sex,
+        b.head_image
+    </sql>
+
+    <insert id="insertPojo" parameterType="UserAttention">
+        insert into user_attention(
+        user_id,
+        user_attention_id
+        ) values (
+        #{userId},
+        #{userAttentionId}
+        )
+    </insert>
+
+    <select id="getListByUserId" resultMap="BaseResultMap">
+        select <include refid="columns" />
+        from user_attention a
+        left join sys_user b
+        on a.user_attention_id=b.user_id
+        where a.user_id=#{userId}
+    </select>
+
+    <select id="getListByAttentionId" resultMap="BaseResultMap">
+        select <include refid="columns" />
+        from user_attention a
+        left join sys_user b
+        on a.user_id=b.user_id
+        where a.user_attention_id=#{userAttentionId}
+    </select>
+
+    <delete id="deletePojo">
+        delete from
+        user_attention
+        where
+        user_id=#{userId}
+        and
+        user_attention_id=#{userAttentionId}
+    </delete>
+
+</mapper>
