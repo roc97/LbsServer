@@ -30,7 +30,11 @@
 
     <select id="getPojo" resultMap="BaseResultMap">
         select * from sys_permission
-        where permission_id=#{permissionId}
+        where permission_id=#{id}
+    </select>
+
+    <select id="getAllPermission" resultMap="BaseResultMap">
+        select * from sys_permission
     </select>
 
     <select id="getChildrenIds" resultMap="BaseResultMap">
