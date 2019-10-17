@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role`(
 	`role_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '角色id',
 	`role_name` VARCHAR(64) NOT NULL COMMENT '角色名称',
+	`role_name_zh` varchar(64) not null comment '中文角色名称',
 	`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 	PRIMARY KEY(`role_id`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='角色表';

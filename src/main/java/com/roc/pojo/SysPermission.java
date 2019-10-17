@@ -3,6 +3,7 @@ package com.roc.pojo;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 public class SysPermission {
@@ -18,6 +19,8 @@ public class SysPermission {
     private int orderIndex;//排序id
 
     private int parentId;//父节点id
+
+    private List<SysRole> roles;
 
     private Timestamp createTime;
 }

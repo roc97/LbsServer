@@ -1,9 +1,11 @@
 package com.roc.config;
 
 import com.roc.pojo.SysPermission;
+import com.roc.pojo.SysRole;
 import com.roc.service.SysPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
@@ -25,11 +27,20 @@ public class CustomMetaDataSource  implements FilterInvocationSecurityMetadataSo
         List<SysPermission> allPermission = sysPermissionService.getAllPermission();
         for (SysPermission p:
              allPermission) {
-//            if (antPathMatcher.match(p.getUrl(),requestUrl)
-//            && p.get)
-            //待修改实体类和实体类xml等
+            if (antPathMatcher.match(p.getUrl(),requestUrl)
+            && p.getRoles().size()>0){
+                List<SysRole> roles= p.getRoles();
+                int size=roles.size();
+                String[] values=new String[size];
+                for (int i = 0; i < size; i++) {
+                    values[i] = roles.get(i).getRoleName();
+                }
+                return SecurityConfig.createList(values);
+            }
+
         }
-        return null;
+        //没有匹配上的资源，都是登录访问
+        return SecurityConfig.createList("ROLE_LOGIN");
     }
 
     @Override

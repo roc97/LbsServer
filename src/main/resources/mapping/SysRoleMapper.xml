@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="SysRole">
         <id column="role_id" property="roleId" jdbcType="INTEGER"/>
         <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+        <result column="role_name_zh" property="roleNameZh" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
