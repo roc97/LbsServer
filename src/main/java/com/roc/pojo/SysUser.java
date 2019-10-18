@@ -19,9 +19,9 @@ public class SysUser implements UserDetails {
 
     private int userId;
 
-    private String userName;//用户昵称
+    private String userName;//账号
 
-    private String account;//账号
+    private String name;//昵称
 
     private String password;//密码
 
@@ -44,7 +44,7 @@ public class SysUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.account;
+        return this.userName;
     }
 
     @Override

@@ -19,9 +19,9 @@ public class UserController {
 
     @RequestMapping("/login")
     public JsonResult login(Map<String,Object> map){
-        String account=(String)map.get("account");
+        String userName=(String)map.get("userName");
         String password=(String)map.get("password");
-        boolean flag = userService.login(account, password);
+        boolean flag = userService.login(userName, password);
         if(flag){
             map.put("msg","登录成功");
         }

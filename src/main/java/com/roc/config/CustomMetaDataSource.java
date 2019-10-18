@@ -14,6 +14,9 @@ import org.springframework.util.AntPathMatcher;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * 通用元数据
+ */
 @Component
 public class CustomMetaDataSource  implements FilterInvocationSecurityMetadataSource {
 
@@ -29,6 +32,8 @@ public class CustomMetaDataSource  implements FilterInvocationSecurityMetadataSo
              allPermission) {
             if (antPathMatcher.match(p.getUrl(),requestUrl)
             && p.getRoles().size()>0){
+                //如果当前的请求匹配了数据中的url
+                //则获取他的角色列表
                 List<SysRole> roles= p.getRoles();
                 int size=roles.size();
                 String[] values=new String[size];

@@ -5,7 +5,7 @@
 <mapper namespace="com.roc.mapper.SysUserMapper">
     <resultMap id="BaseResultMap" type="SysUser">
         <id column="user_id" property="userId" jdbcType="INTEGER" />
-        <result column="account" property="account" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="user_name" property="userName" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
         <result column="sex" property="sex" jdbcType="CHAR"/>
@@ -30,9 +30,9 @@
 
     <insert id="insertPojo" parameterType="SysUser">
         insert into
-        sys_user(account,user_name,password,sex,head_image)
+        sys_user(name,user_name,password,sex,head_image)
         values (
-        #{account},
+        #{name},
         #{userName},
         #{password},
         #{sex},
@@ -42,7 +42,7 @@
 
     <update id="updatePojo" parameterType="SysUser">
         update sys_user set
-        account=#{account},
+        name=#{name},
         user_name=#{userName},
         password=#{password},
         sex=#{sex},
@@ -59,9 +59,9 @@
         where su.user_id=#{id}
     </select>
 
-    <select id="getByAccount" resultMap="lazyLoadRoles">
+    <select id="getByUserName" resultMap="lazyLoadRoles">
         select * from sys_user
-        where account=#{account}
+        where user_name=#{userName}
     </select>
 
     <select id="getRolesByUserId" resultMap="SysRole">

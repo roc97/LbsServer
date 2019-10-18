@@ -4,8 +4,8 @@ USE `lbs`;
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`(
 	`user_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '用户id',
-	`account` VARCHAR(64) NOT NULL COMMENT '账号',
-	`user_name` VARCHAR(64) NOT NULL COMMENT '用户昵称',
+	`name` VARCHAR(64) NOT NULL COMMENT '用户昵称',
+	`user_name` VARCHAR(64) NOT NULL COMMENT '账号',
 	`password` VARCHAR(64) NOT NULL COMMENT '密码',
 	`sex` CHAR(4) NOT NULL COMMENT '性别',
 	`head_image` VARCHAR(128) COMMENT '头像',

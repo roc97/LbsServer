@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SysUserMapper extends BaseMapper<SysUser>{
 
-    SysUser getByAccount(String account);
+    SysUser getByUserName(String userName);
 
     List<SysRole> getRolesByUserId(int userId);
 }
