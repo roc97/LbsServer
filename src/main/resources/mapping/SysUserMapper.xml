@@ -64,7 +64,7 @@
         where user_name=#{userName}
     </select>
 
-    <select id="getRolesByUserId" resultMap="SysRole">
+    <select id="getRolesByUserId" resultType="SysRole">
         select sr.* from sys_role_user sru,sys_role sr
         where sru.role_id=sr.role_id
         and sru.user_id=#{userId}

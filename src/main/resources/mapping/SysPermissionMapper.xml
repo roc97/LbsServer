@@ -11,6 +11,9 @@
         <result column="order_index" property="orderIndex" jdbcType="INTEGER"/>
         <result column="parent_id" property="parentId" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="eagerLoadRoles" type="SysPermission" extends="BaseResultMap">
         <collection property="roles" ofType="SysRole">
             <id property="roleId" column="role_id" />
             <result property="roleName" column="role_name" />
@@ -38,7 +41,7 @@
         where permission_id=#{id}
     </select>
 
-    <select id="getAllPermission" resultMap="BaseResultMap">
+    <select id="getAllPermission" resultMap="eagerLoadRoles">
         select sp.*,sr.* from sys_permission sp
         left join sys_permission_role spr
         on spr.permission_id=sp.permission_id

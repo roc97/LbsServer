@@ -3,15 +3,13 @@ package com.roc.api;
 import com.roc.service.UserService;
 import com.roc.utils.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/user")
-@ResponseBody
 public class UserController {
 
     @Autowired
@@ -19,7 +17,7 @@ public class UserController {
 
     @RequestMapping("/login")
     public JsonResult login(Map<String,Object> map){
-        String userName=(String)map.get("userName");
+        String userName=(String)map.get("username");
         String password=(String)map.get("password");
         boolean flag = userService.login(userName, password);
         if(flag){

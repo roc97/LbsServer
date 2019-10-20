@@ -2,11 +2,15 @@ package com.roc.pojo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * @author Administrator
+ */
 @Data
-public class SysPermission {
+public class SysPermission implements Serializable {
 
     private int permissionId;
 

@@ -17,8 +17,7 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private SysUserMapper mapper;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
 
 
     @Override
