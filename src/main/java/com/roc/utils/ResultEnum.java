@@ -9,15 +9,14 @@ import lombok.Getter;
 public enum ResultEnum {
     LOGIN_SUCCESS(0,"登录成功"),
     NO_EXIST_USER(1,"不存在该用户"),
-    PASSWORD_ERROR(2,"密码错误"),
-    NO_LOGIN(3,"尚未登录,请登录!"),
-    LACK_AUTHORITY(4,"权限不足，请联系管理员！"),
-    USERNANE_OR_PASSWORD_ERROR(5,"账户名或者密码输入错误！"),
-    LOGIN_FAILURE(6,"登录失败"),
-    LOGOUT_SUCCESS(7,"注销成功"),
-    REGISTER_FAILURE(8,"注册失败"),
-    USER_ALREDY_EXIST(9,"用户已存在"),
-    REGISTER_SUCCESS(10,"注册成功"),
+    NO_LOGIN(2,"尚未登录,请登录!"),
+    LACK_AUTHORITY(3,"权限不足，请联系管理员！"),
+    USERNANE_OR_PASSWORD_ERROR(4,"账号或者密码输入错误！"),
+    LOGIN_FAILURE(5,"登录失败"),
+    LOGOUT_SUCCESS(6,"注销成功"),
+    REGISTER_FAILURE(7,"注册失败"),
+    USER_ALREDY_EXIST(8,"用户已存在"),
+    REGISTER_SUCCESS(9,"注册成功"),
     ;
 
     private Integer code;
