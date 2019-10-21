@@ -22,6 +22,12 @@ import java.util.Iterator;
 public class UrlAccessDecisionManager implements AccessDecisionManager {
     @Override
     public void decide(Authentication authentication, Object o, Collection<ConfigAttribute> collection) throws AccessDeniedException, InsufficientAuthenticationException {
+        String registerUrl="/user/register";
+        String s = o.toString();
+        if(s.contains(registerUrl)){
+            //用户注册
+            return;
+        }
         Iterator<ConfigAttribute> iterator = collection.iterator();
         while (iterator.hasNext()){
             ConfigAttribute ca = iterator.next();

@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
                         httpServletResponse.setContentType("application/json;charset=utf-8");
-                        JsonResult jsonResult=null;
+                        JsonResult jsonResult;
                         if(e instanceof BadCredentialsException ||
                         e instanceof UsernameNotFoundException){
                             jsonResult=JsonResult.error(ResultEnum.USERNANE_OR_PASSWORD_ERROR.getMsg());

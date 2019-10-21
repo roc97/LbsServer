@@ -14,10 +14,7 @@
     </resultMap>
     <resultMap id="lazyLoadRoles" type="SysUser" extends="BaseResultMap">
         <collection property="roles" ofType="SysRole" select="com.roc.mapper.SysUserMapper.getRolesByUserId"
-                    column="user_id">
-            <id property="roleId" column="role_id" />
-            <result property="roleName" column="role_name" />
-            <result property="roleNameZh" column="role_name_zh" />
+                    column="{userId=user_id}">
         </collection>
     </resultMap>
     <resultMap id="eagerLoadRoles" type="SysUser" extends="BaseResultMap">
@@ -65,7 +62,9 @@
     </select>
 
     <select id="getRolesByUserId" resultType="SysRole">
-        select sr.* from sys_role_user sru,sys_role sr
+        select sr.role_id as roleId,sr.role_name as roleName,sr.role_name_zh
+        as roleNameZh
+        from sys_role_user sru,sys_role sr
         where sru.role_id=sr.role_id
         and sru.user_id=#{userId}
     </select>

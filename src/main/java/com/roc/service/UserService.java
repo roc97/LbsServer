@@ -33,27 +33,21 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    @Transactional(readOnly = true)
-    public boolean login(String userName,String password) throws LbsServerException{
-        String encodePassword = bCryptPasswordEncoder.encode(password);
-        SysUser user = (SysUser) loadUserByUsername(userName);
-        if(user!=null) {
-            if (user.getPassword().equals(encodePassword)) {
-                return true;
-            }else{
-                throw new LbsServerException(ResultEnum.PASSWORD_ERROR);
-            }
-        }
-        return false;
-    }
 
 
-    public int addUser(SysUser user){
+    public int registerUser(SysUser user)throws LbsServerException{
         if(user!=null){
+            if(mapper.getByUserName(user.getUsername())!=null){
+                throw new LbsServerException(ResultEnum.USER_ALREDY_EXIST);
+            }
             String encodePassword = bCryptPasswordEncoder.encode(user.getPassword());
             user.setPassword(encodePassword);
         }
-        return mapper.insertPojo(user);
+        int i = mapper.insertPojo(user);
+        if(i==0){
+            throw new LbsServerException(ResultEnum.REGISTER_FAILURE);
+        }
+        return i;
     }
 
     public int updateUser(SysUser user){

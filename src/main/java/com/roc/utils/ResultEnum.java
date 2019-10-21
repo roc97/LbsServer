@@ -15,6 +15,9 @@ public enum ResultEnum {
     USERNANE_OR_PASSWORD_ERROR(5,"账户名或者密码输入错误！"),
     LOGIN_FAILURE(6,"登录失败"),
     LOGOUT_SUCCESS(7,"注销成功"),
+    REGISTER_FAILURE(8,"注册失败"),
+    USER_ALREDY_EXIST(9,"用户已存在"),
+    REGISTER_SUCCESS(10,"注册成功"),
     ;
 
     private Integer code;
