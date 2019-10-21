@@ -4,6 +4,9 @@ import com.roc.pojo.SysRoleUser;
 
 import java.util.List;
 
+/**
+ * @author p
+ */
 public interface SysRoleUserMapper {
 
     int insertPojo(int userId,int roleId);

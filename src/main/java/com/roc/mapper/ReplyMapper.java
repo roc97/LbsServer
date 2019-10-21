@@ -4,6 +4,9 @@ import com.roc.pojo.Reply;
 
 import java.util.List;
 
+/**
+ * @author p
+ */
 public interface ReplyMapper{
 
     int insertPojo(Reply reply);
@@ -16,6 +19,6 @@ public interface ReplyMapper{
 
     int deleteMainOrGeneralReply(int replyId,int userId);//删除主回复
 
-    int CascadeDelete(int mainReplyId);//主回复被删,级联删除关联主回复的
+    int cascadeDelete(int mainReplyId);//主回复被删,级联删除关联主回复的
 
 }

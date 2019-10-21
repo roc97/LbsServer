@@ -99,7 +99,7 @@
         and user_id=#{userId}
     </delete>
 
-    <delete id="CascadeDelete">
+    <delete id="cascadeDelete">
         delete from reply
         where main_reply_id=#{mainReplyId}
     </delete>

@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * 通用元数据
+ * @author p
  */
 @Component
 public class CustomMetaDataSource  implements FilterInvocationSecurityMetadataSource {

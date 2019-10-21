@@ -4,6 +4,9 @@ import com.roc.pojo.Experience;
 
 import java.util.List;
 
+/**
+ * @author p
+ */
 public interface ExperienceMapper extends BaseMapper<Experience> {
 
     List<Experience> getListByUserId(int userId);//获取用户所有心得

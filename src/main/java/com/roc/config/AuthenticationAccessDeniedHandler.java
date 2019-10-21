@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 
 /**
  * 自定义实现访问拒绝处理器
+ * @author p
  */
 @Component
 public class AuthenticationAccessDeniedHandler implements AccessDeniedHandler {

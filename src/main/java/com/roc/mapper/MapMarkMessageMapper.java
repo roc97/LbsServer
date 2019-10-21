@@ -4,6 +4,9 @@ import com.roc.pojo.MapMarkMessage;
 
 import java.util.List;
 
+/**
+ * @author p
+ */
 public interface MapMarkMessageMapper {
 
     int insertPojo(MapMarkMessage mapMarkMessage);

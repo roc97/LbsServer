@@ -3,6 +3,9 @@ package com.roc.exception;
 import com.roc.utils.ResultEnum;
 import lombok.Getter;
 
+/**
+ * @author p
+ */
 @Getter
 public class LbsServerException extends RuntimeException {
 

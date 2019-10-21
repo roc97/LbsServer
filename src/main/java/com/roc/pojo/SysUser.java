@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,26 +14,41 @@ import java.util.List;
 
 /**
  * 用户实体
+ * @author p
  */
 @Data
-public class SysUser implements UserDetails {
+public class SysUser implements UserDetails, Serializable {
 
     private int userId;
-
-    private String userName;//账号
-
-    private String name;//昵称
-
-    private String password;//密码
-
-    private String sex;//性别
-
-    private String headImage;//头像url
+    /**
+     * 账号
+     */
+    private String userName;
+    /**
+     * 昵称
+     */
+    private String name;
+    /**
+     * 密码
+     */
+    private String password;
+    /**
+     * 性别
+     */
+    private String sex;
+    /**
+     * 头像url
+     */
+    private String headImage;
 
     private Timestamp  createTime;
 
     private List<SysRole> roles;
-    //后续设计
+
+    /**
+     * 后续设计
+     * @return
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();

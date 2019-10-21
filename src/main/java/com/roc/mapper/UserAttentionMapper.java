@@ -5,6 +5,9 @@ import com.roc.pojo.UserAttention;
 
 import java.util.List;
 
+/**
+ * @author p
+ */
 public interface UserAttentionMapper{
 
     int insertPojo(UserAttention userAttention);

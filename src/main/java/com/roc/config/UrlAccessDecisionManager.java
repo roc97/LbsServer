@@ -16,6 +16,7 @@ import java.util.Iterator;
 
 /**
  * url访问决策管理(实现访问决策管理接口)
+ * @author p
  */
 @Component
 public class UrlAccessDecisionManager implements AccessDecisionManager {

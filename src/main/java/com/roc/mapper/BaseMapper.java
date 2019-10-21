@@ -1,5 +1,8 @@
 package com.roc.mapper;
 
+/**
+ * @author p
+ */
 public interface BaseMapper<T> {
 
     int insertPojo(T t);

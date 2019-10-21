@@ -4,6 +4,9 @@ import com.roc.pojo.SysPermissionRole;
 
 import java.util.List;
 
+/**
+ * @author p
+ */
 public interface SysPermissionRoleMapper {
 
     int insertPojo(int roleId,int permissionId);
