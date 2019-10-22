@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 /**
  * @author p
  */
@@ -30,6 +32,7 @@ public class UserService implements UserDetailsService {
         if(user==null){
             throw new UsernameNotFoundException(ResultEnum.NO_EXIST_USER.getMsg());
         }
+        String uuid = UUID.randomUUID().toString().replaceAll("-","");
         return user;
     }
 

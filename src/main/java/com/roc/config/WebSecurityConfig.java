@@ -1,9 +1,12 @@
 package com.roc.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roc.pojo.SysUser;
 import com.roc.service.UserService;
 import com.roc.utils.JsonResult;
+import com.roc.utils.RedisUtil;
 import com.roc.utils.ResultEnum;
+import com.roc.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author p
@@ -43,6 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UrlAccessDecisionManager urlAccessDecisionManager;
     @Autowired
     private AuthenticationAccessDeniedHandler accessDeniedHandler;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -81,7 +89,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                         httpServletResponse.setContentType("application/json;charset=utf-8");
                         PrintWriter writer = httpServletResponse.getWriter();
+                        SysUser currentUser = UserUtil.getCurrentUser();
                         JsonResult jr = JsonResult.ok(ResultEnum.LOGIN_SUCCESS.getMsg());
+                        String uuid= UUID.randomUUID().toString().replaceAll("-","");
+                        Map<String,Object> map=new HashMap<>(16);
+                        map.put("userId",currentUser.getUserId());
+                        map.put("name",currentUser.getName());
+                        map.put("userName",currentUser.getUsername());
+                        map.put("headImage",currentUser.getHeadImage());
+                        jr.put("token",uuid);
+                        jr.put("user",map);
+                        redisUtil.set(uuid,currentUser,60*60*24);
                         writer.write(new ObjectMapper().writeValueAsString(jr));
                         writer.flush();
                         writer.close();
@@ -95,6 +113,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                         httpServletResponse.setContentType("application/json;charset=utf-8");
+                        String token = httpServletRequest.getHeader("token");
+                        redisUtil.del(token);
                         JsonResult jr = JsonResult.ok(ResultEnum.LOGOUT_SUCCESS.getMsg());
                         PrintWriter writer = httpServletResponse.getWriter();
                         writer.write(new ObjectMapper().writeValueAsString(jr));
