@@ -18,7 +18,13 @@ public class JsonResult extends HashMap<String, Object> {
 	public static JsonResult error() {
 		return error(500, "未知异常，请联系管理员");
 	}
-	
+
+	public static JsonResult putValue(String key,Object o){
+		JsonResult jr=new JsonResult();
+		jr.put(key,o);
+		return jr;
+	}
+
 	public static JsonResult error(String msg) {
 		return error(500, msg);
 	}
@@ -30,12 +36,24 @@ public class JsonResult extends HashMap<String, Object> {
 		return r;
 	}
 
+	public static JsonResult error(ResultEnum resultEnum) {
+		JsonResult r = new JsonResult();
+		r.put("status", resultEnum.getCode());
+		r.put("msg", resultEnum.getMsg());
+		return r;
+	}
+
 	public static JsonResult ok(String msg) {
 		JsonResult r = new JsonResult();
 		r.put("msg", msg);
 		return r;
 	}
-	
+
+	public static JsonResult ok(JsonResult r,String msg) {
+		r.put("msg", msg);
+		return r;
+	}
+
 	public static JsonResult ok(Map<String, Object> map) {
 		JsonResult r = new JsonResult();
 		r.putAll(map);

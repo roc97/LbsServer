@@ -17,6 +17,12 @@ public enum ResultEnum {
     REGISTER_FAILURE(7,"注册失败"),
     USER_ALREDY_EXIST(8,"用户已存在"),
     REGISTER_SUCCESS(9,"注册成功"),
+    FILE_UPLOAD_FAILURE(10,"文件上传失败,请重新上传！"),
+    JSON_PARSE_EXCEPTION(11,"数据解析异常!"),
+    FILE_SIZE_TOO_BIG(12,"图片大小不能超过3M！"),
+    OPERATION_SUCCESS(13,"操作成功!"),
+    OPERATION_FAILURE(14,"操作失败"),
+    LOGIN_EXPIRE(506,"登录过期，请重新登录!"),
     ;
 
     private Integer code;

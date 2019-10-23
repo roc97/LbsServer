@@ -19,6 +19,8 @@ import java.util.List;
 @Data
 public class SysUser implements UserDetails, Serializable {
 
+
+    private static final long serialVersionUID = -1009735448529946605L;
     private int userId;
     /**
      * 账号

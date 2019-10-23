@@ -1,6 +1,7 @@
 package com.roc.service;
 
 import com.roc.exception.LbsServerException;
+import com.roc.mapper.SysRoleUserMapper;
 import com.roc.mapper.SysUserMapper;
 import com.roc.pojo.SysUser;
 import com.roc.utils.ResultEnum;
@@ -22,6 +23,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private SysUserMapper mapper;
+    @Autowired
+    private SysRoleUserMapper sysRoleUserMapper;
     private BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
 
 
@@ -37,8 +40,9 @@ public class UserService implements UserDetailsService {
     }
 
 
-
+    @Transactional(rollbackFor = LbsServerException.class)
     public int registerUser(SysUser user)throws LbsServerException{
+        int basicRoleId=2;
         if(user!=null){
             if(mapper.getByUserName(user.getUsername())!=null){
                 throw new LbsServerException(ResultEnum.USER_ALREDY_EXIST);
@@ -50,16 +54,28 @@ public class UserService implements UserDetailsService {
         if(i==0){
             throw new LbsServerException(ResultEnum.REGISTER_FAILURE);
         }
-        return i;
+        int userId=mapper.getByUserName(user.getUsername()).getUserId();
+        int j=sysRoleUserMapper.insertPojo(userId,basicRoleId);
+        if(j==0){
+            throw new LbsServerException(ResultEnum.REGISTER_FAILURE);
+        }
+        return i+j;
     }
 
-    public int updateUser(SysUser user){
-        return mapper.updatePojo(user);
+    public void updateUser(SysUser user){
+        int i=mapper.updatePojo(user);
+        if(i==0){
+            throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
+        }
     }
 
     @Transactional(readOnly = true)
     public SysUser getUser(int id){
-        return mapper.getPojo(id);
+        SysUser user=mapper.getPojo(id);
+        if(user==null){
+            throw new LbsServerException(ResultEnum.NO_EXIST_USER);
+        }
+        return user;
     }
 
     public int deleteUser(int id){
