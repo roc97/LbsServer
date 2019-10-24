@@ -1,8 +1,11 @@
 HELP.md
+lbsServer.iml
+mvnw
+mvnw.cmd
 target/
-!.mvn/wrapper/maven-wrapper.jar
+.mvn
 !**/src/main/**
-!**/src/test/**
+/src/test/
 
 ### STS ###
 .apt_generated

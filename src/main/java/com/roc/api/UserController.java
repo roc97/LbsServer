@@ -8,6 +8,7 @@ import com.roc.utils.JsonResult;
 import com.roc.utils.JsonUtil;
 import com.roc.utils.RedisUtil;
 import com.roc.utils.ResultEnum;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,7 @@ import java.io.IOException;
 /**
  * @author p
  */
+@Api(value = "/user",description = "用户接口")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -28,6 +30,11 @@ public class UserController {
     private RedisUtil redisUtil;
 
 
+    @ApiOperation(value = "用户注册功能",response = JsonResult.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "昵称",required = true),
+            @ApiImplicitParam(name = "username", value = "用户名", required = true),
+            @ApiImplicitParam(name = "password", value = "密码", required = true)})
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     public JsonResult register(@RequestParam(name = "name")String name,
                                @RequestParam(name = "username")String username,
@@ -40,18 +47,23 @@ public class UserController {
         return JsonResult.ok(ResultEnum.REGISTER_SUCCESS.getMsg());
     }
 
+    @ApiOperation(value = "更换头像功能",response = JsonResult.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "token令牌",required = true),
+            @ApiImplicitParam(name = "userId", value = "用户Id", required = true)})
     @RequestMapping(value = "/updateIcon",method = RequestMethod.POST)
     public JsonResult updateIcon(@RequestHeader("token")String token,
                                  @RequestParam("userId")String userId,
-                                 @RequestParam(value = "file",required=false)MultipartFile blobFile){
+                                 @ApiParam(value = "png/jpeg文件",name = "file")@RequestParam(value = "file",required=false)MultipartFile blobFile){
         Object redisValue= redisUtil.get(token);
         if (redisValue==null){
+            //该用户未登录
             return JsonResult.error(ResultEnum.LOGIN_EXPIRE);
         }
         JsonObject jo=JsonUtil.parse(redisValue.toString());
         String redisUserId=jo.get("userId").getAsString();
         if(!(userId.equals(redisUserId))){
-            //不存在该用户或者前端传过来的用户id与token里存储的不同
+            //前端传过来的用户id与token里存储的不同
             return JsonResult.error(ResultEnum.LOGIN_EXPIRE);
         }
         if(blobFile==null){
