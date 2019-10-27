@@ -22,6 +22,8 @@ public enum ResultEnum {
     FILE_SIZE_TOO_BIG(12,"图片大小不能超过3M！"),
     OPERATION_SUCCESS(13,"操作成功!"),
     OPERATION_FAILURE(14,"操作失败"),
+    ATTENTION_FAILURE(15,"关注失败"),
+    ATTENTION_SUCCESS(16,"关注成功"),
     LOGIN_EXPIRE(506,"登录过期，请重新登录!"),
     ;
 

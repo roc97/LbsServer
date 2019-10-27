@@ -10,11 +10,23 @@ import java.util.List;
  */
 public interface UserAttentionMapper{
 
+    UserAttention getPojo(int userId,int userAttentionId);
+
     int insertPojo(UserAttention userAttention);
 
-    List<UserAttention> getListByUserId(int userId);//获取关注列表
+    /**
+     * 获取关注列表
+     * @param userId
+     * @return
+     */
+    List<UserAttention> getListByUserId(int userId);
 
-    List<UserAttention> getListByAttentionId(int userAttentionId);//获取关注了我的列表
+    /**
+     * 获取关注了我的列表
+     * @param userAttentionId
+     * @return
+     */
+    List<UserAttention> getListByAttentionId(int userAttentionId);
 
     int deletePojo(int userId,int userAttentionId);
 }

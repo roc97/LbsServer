@@ -33,6 +33,12 @@
         )
     </insert>
 
+    <select id="getPojo" resultType="UserAttention">
+        select * from user_attention
+        where user_id=#{userId}
+        and user_attention_id=#{userAttentionId}
+    </select>
+
     <select id="getListByUserId" resultMap="BaseResultMap">
         select <include refid="columns" />
         from user_attention a
