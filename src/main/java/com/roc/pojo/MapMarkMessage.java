@@ -42,6 +42,10 @@ public class MapMarkMessage implements Serializable {
     /**
      * 以下字段不插入数据库
      */
-    private String sex;
-    private String userName;
+    private String headImage;
+    private String name;
+    /**
+     * 判断是否关注标记
+     */
+    private boolean selfStatus;
 }

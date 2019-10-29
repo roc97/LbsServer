@@ -25,6 +25,8 @@ public enum ResultEnum {
     ATTENTION_FAILURE(15,"关注失败"),
     ATTENTION_SUCCESS(16,"关注成功"),
     CANCEL_SUCCESS(17,"取关成功"),
+    PUBLIC_FAILURE(18,"发布失败"),
+    PUBLIC_SUCCESS(19,"发布成功"),
     LOGIN_EXPIRE(506,"登录过期，请重新登录!"),
     ;
 

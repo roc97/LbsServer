@@ -1,6 +1,7 @@
 package com.roc.mapper;
 
 import com.roc.pojo.MapMarkMessage;
+import com.roc.vo.MarkVo;
 
 import java.util.List;
 
@@ -11,7 +12,9 @@ public interface MapMarkMessageMapper {
 
     int insertPojo(MapMarkMessage mapMarkMessage);
 
-    List<MapMarkMessage> getAllList();
+    MapMarkMessage getDetailMessage(int markId);
+
+    List<MarkVo> getAllList();
 
     List<MapMarkMessage> getListByStatus(int status);//通过状态获取相应标注信息
 

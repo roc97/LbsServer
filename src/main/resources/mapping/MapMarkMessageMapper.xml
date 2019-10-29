@@ -12,8 +12,8 @@
         <result column="content" property="content" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
-        <result column="sex" property="sex" jdbcType="VARCHAR"/>
-        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="head_image" property="headImage" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="columns">
@@ -25,8 +25,8 @@
       a.content,
       a.status,
       a.create_time,
-      b.sex,
-      b.user_name
+      b.head_image,
+      b.name
     </sql>
 
     <insert id="insertPojo" parameterType="MapMarkMessage">
@@ -47,8 +47,21 @@
         )
     </insert>
 
-    <select id="getAllList" resultMap="BaseResultMap">
+    <select id="getDetailMessage" resultMap="BaseResultMap">
         select <include refid="columns"/>
+        from map_mark_message a
+        left join sys_user b
+        on a.user_id=b.user_id
+        where a.mark_id=#{markId}
+    </select>
+
+    <select id="getAllList" resultType="com.roc.vo.MarkVo">
+        select
+        a.user_id as "userId",
+        a.mark_id as "markId",
+        a.lng,
+        a.lat,
+        b.head_image as "headImage"
         from map_mark_message a
         left join sys_user b
         on a.user_id=b.user_id
