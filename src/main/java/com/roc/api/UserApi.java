@@ -5,10 +5,7 @@ import com.roc.exception.LbsServerException;
 import com.roc.pojo.SysUser;
 import com.roc.service.UserAttentionService;
 import com.roc.service.UserService;
-import com.roc.utils.JsonResult;
-import com.roc.utils.JsonUtil;
-import com.roc.utils.RedisUtil;
-import com.roc.utils.ResultEnum;
+import com.roc.utils.*;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +22,12 @@ import java.util.Map;
 @Api(value = "/user",description = "用户接口")
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class UserApi {
 
     @Autowired
     private UserService userService;
     @Autowired
-    private RedisUtil redisUtil;
+    private UserUtil userUtil;
     @Autowired
     private UserAttentionService userAttentionService;
 
@@ -60,16 +57,9 @@ public class UserController {
     public JsonResult updateIcon(@RequestHeader("token")String token,
                                  @RequestParam("userId")int userId,
                                  @ApiParam(value = "png/jpeg文件",name = "file")@RequestParam(value = "file",required=false)MultipartFile blobFile){
-        Object redisValue= redisUtil.get(token);
-        if (redisValue==null){
-            //该用户未登录
-            return JsonResult.error(ResultEnum.LOGIN_EXPIRE);
-        }
-        JsonObject jo=JsonUtil.parse(redisValue.toString());
-        int redisUserId=Integer.valueOf(jo.get("userId").getAsString());
-        if(userId!=redisUserId){
-            //前端传过来的用户id与token里存储的不同
-            return JsonResult.error(ResultEnum.LOGIN_EXPIRE);
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
         }
         if(blobFile==null){
             throw new LbsServerException(ResultEnum.FILE_UPLOAD_FAILURE);
@@ -103,16 +93,9 @@ public class UserController {
                         @ApiImplicitParam(name = "token", value = "token令牌",required = true)})
     @RequestMapping(value = "/{userId}/userMsg",method = RequestMethod.GET)
     public JsonResult userMsg(@PathVariable("userId")int userId,@RequestHeader("token")String token){
-        Object redisValue= redisUtil.get(token);
-        if (redisValue==null){
-            //该用户未登录
-            return JsonResult.error(ResultEnum.LOGIN_EXPIRE);
-        }
-        JsonObject jo=JsonUtil.parse(redisValue.toString());
-        int redisUserId=Integer.valueOf(jo.get("userId").getAsString());
-        if(userId!=redisUserId){
-            //前端传过来的用户id与token里存储的不同
-            return JsonResult.error(ResultEnum.LOGIN_EXPIRE);
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
         }
         SysUser user = userService.getUser(userId);
         if(user==null){
@@ -132,21 +115,35 @@ public class UserController {
             @ApiImplicitParam(name = "token", value = "token令牌",required = true)})
     @RequestMapping(value = "/attention",method = RequestMethod.POST)
     public JsonResult attention(@RequestParam("userId")int userId,@RequestParam("followId")int followId,@RequestHeader("token")String token){
-        Object redisValue= redisUtil.get(token);
-        if (redisValue==null){
-            //该用户未登录
-            return JsonResult.error(ResultEnum.LOGIN_EXPIRE);
-        }
-        JsonObject jo=JsonUtil.parse(redisValue.toString());
-        int redisUserId=Integer.valueOf(jo.get("userId").getAsString());
-        if(userId!=redisUserId){
-            //前端传过来的用户id与token里存储的不同
-            return JsonResult.error(ResultEnum.LOGIN_EXPIRE);
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
         }
         int i = userAttentionService.addAttention(userId, followId);
         if(i!=1){
             return JsonResult.error(ResultEnum.ATTENTION_FAILURE.getMsg());
         }
         return JsonResult.ok(ResultEnum.ATTENTION_SUCCESS.getMsg());
+    }
+
+    @ApiOperation(value = "取消关注功能",response = JsonResult.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户Id",required = true),
+            @ApiImplicitParam(name="cancelId",value = "被取消关注对象的Id",required = true),
+            @ApiImplicitParam(name = "token", value = "token令牌",required = true)})
+    @RequestMapping(value = "/cancelAttention",method = RequestMethod.POST)
+    public JsonResult cancelAttention(@RequestParam("userId")int userId,@RequestParam("cancelId")int cancelId,@RequestHeader("token")String token){
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
+        }
+        if ((userId<=0) || (cancelId<=0)){
+            throw new LbsServerException(ResultEnum.JSON_PARSE_EXCEPTION);
+        }
+        int i = userAttentionService.cancelAttention(userId, cancelId);
+        if(i!=1){
+            return JsonResult.error(ResultEnum.OPERATION_FAILURE.getMsg());
+        }
+        return JsonResult.ok(ResultEnum.CANCEL_SUCCESS.getMsg());
     }
 }

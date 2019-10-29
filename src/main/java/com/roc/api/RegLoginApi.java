@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Api(description = "未登录接口")
 @RestController
-public class RegLoginController {
+public class RegLoginApi {
     @ApiOperation(value = "未登录功能", notes = "未登录时，返回状态码500", response = JsonResult.class)
     @RequestMapping(value = "/login_p",method = RequestMethod.GET)
     public JsonResult login() {

@@ -24,6 +24,7 @@ public enum ResultEnum {
     OPERATION_FAILURE(14,"操作失败"),
     ATTENTION_FAILURE(15,"关注失败"),
     ATTENTION_SUCCESS(16,"关注成功"),
+    CANCEL_SUCCESS(17,"取关成功"),
     LOGIN_EXPIRE(506,"登录过期，请重新登录!"),
     ;
 

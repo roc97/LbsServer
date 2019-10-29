@@ -42,6 +42,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional(rollbackFor = LbsServerException.class)
     public int registerUser(SysUser user)throws LbsServerException{
+        //默认为普通用户
         int basicRoleId=2;
         if(user!=null){
             if(mapper.getByUserName(user.getUsername())!=null){
