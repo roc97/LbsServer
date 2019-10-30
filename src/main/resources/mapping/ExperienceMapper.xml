@@ -13,6 +13,7 @@
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+
     <insert id="insertPojo" parameterType="Experience">
         insert into experience(
         user_id,
@@ -34,8 +35,19 @@
         where experience_id=#{id}
     </select>
 
-    <select id="getAllList" resultMap="BaseResultMap">
-          select * from experience
+    <select id="getAllList" resultType="com.roc.vo.ExperienceVo">
+          select
+          e.experience_id as "commId",
+          e.user_id as "userId",
+          u.name,
+          u.head_image as "headImage",
+          e.title,
+          e.content,
+          e.like_num as "likeNum",
+          e.unlike_num as "unlikeNum"
+          from experience e
+          left join sys_user u
+          on e.user_id=u.user_id
     </select>
 
     <select id="getListByTitle" resultMap="BaseResultMap">

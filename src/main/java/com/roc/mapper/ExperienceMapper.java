@@ -1,6 +1,7 @@
 package com.roc.mapper;
 
 import com.roc.pojo.Experience;
+import com.roc.vo.ExperienceVo;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ public interface ExperienceMapper extends BaseMapper<Experience> {
 
     List<Experience> getListByTitle(String title);//根据标题模糊搜索
 
-    List<Experience> getAllList();
+    List<ExperienceVo> getAllList();
 }
