@@ -47,6 +47,32 @@
         )
     </insert>
 
+    <select id="getByUserIdAndMarkId" resultType="MapMarkMessage">
+        select
+         a.mark_id as "markId",
+         a.user_id as "userId",
+         a.lat,
+         a.lng,
+         a.title,
+         a.content,
+         a.status
+         from map_mark_message a
+         where a.user_id=#{userId}
+         and a.mark_id=#{markId}
+         and status=#{status}
+    </select>
+
+    <select id="getCheckList" resultType="com.roc.vo.PublicCheckVo">
+        select
+         a.mark_id as "markId",
+         a.title,
+         a.content,
+         a.status
+         from map_mark_message a
+         where a.user_id=#{userId}
+         and a.status!=#{status}
+    </select>
+
     <select id="getDetailMessage" resultMap="BaseResultMap">
         select <include refid="columns"/>
         from map_mark_message a

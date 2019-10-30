@@ -5,6 +5,7 @@ import com.roc.mapper.MapMarkMessageMapper;
 import com.roc.pojo.MapMarkMessage;
 import com.roc.utils.ResultEnum;
 import com.roc.vo.MarkVo;
+import com.roc.vo.PublicCheckVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,4 +44,21 @@ public class MarkService {
        return messageMapper.insertPojo(message);
     }
 
+    public List<MapMarkMessage> findListByStatus(int status){
+        return messageMapper.getListByStatus(status);
+    }
+
+    public int publicPopularMsg(int userId,int markId,int status)throws LbsServerException{
+        int unPublicStatus=0;
+        MapMarkMessage message = messageMapper.getByUserIdAndMarkId(userId, markId, unPublicStatus);
+        if (message==null){
+            throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
+        }
+        return messageMapper.updatePojo(markId,status);
+    }
+
+    public List<PublicCheckVo> findCheckList(int userId){
+        int status=0;
+        return messageMapper.getCheckList(userId,status);
+    }
 }

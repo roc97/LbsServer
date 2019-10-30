@@ -2,6 +2,7 @@ package com.roc.mapper;
 
 import com.roc.pojo.MapMarkMessage;
 import com.roc.vo.MarkVo;
+import com.roc.vo.PublicCheckVo;
 
 import java.util.List;
 
@@ -12,9 +13,19 @@ public interface MapMarkMessageMapper {
 
     int insertPojo(MapMarkMessage mapMarkMessage);
 
+    MapMarkMessage getByUserIdAndMarkId(int userId,int markId,int status);
+
     MapMarkMessage getDetailMessage(int markId);
 
     List<MarkVo> getAllList();
+
+    /**
+     * 获取用户的推广流信息，状态不等于0
+     * @param userId
+     * @param status 状态为0
+     * @return
+     */
+    List<PublicCheckVo> getCheckList(int userId, int status);
 
     List<MapMarkMessage> getListByStatus(int status);//通过状态获取相应标注信息
 
