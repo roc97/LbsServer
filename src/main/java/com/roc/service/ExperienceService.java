@@ -1,6 +1,7 @@
 package com.roc.service;
 
 import com.roc.mapper.ExperienceMapper;
+import com.roc.pojo.Experience;
 import com.roc.vo.ExperienceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,9 @@ public class ExperienceService {
 
     public List<ExperienceVo> findAllList(){
         return experienceMapper.getAllList();
+    }
+
+    public int postExperience(Experience experience){
+        return experienceMapper.insertPojo(experience);
     }
 }
