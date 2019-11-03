@@ -15,4 +15,6 @@ public interface ExperienceMapper extends BaseMapper<Experience> {
     List<Experience> getListByTitle(String title);//根据标题模糊搜索
 
     List<ExperienceVo> getAllList();
+
+    int updateLikeNumAndUnlikeNum(int experienceId,int likeNum,int unlikeNum);//更新点赞和踩
 }

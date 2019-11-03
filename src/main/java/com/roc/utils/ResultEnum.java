@@ -27,6 +27,8 @@ public enum ResultEnum {
     CANCEL_SUCCESS(17,"取关成功"),
     PUBLIC_FAILURE(18,"发布失败"),
     PUBLIC_SUCCESS(19,"发布成功"),
+    REPLY_SUCCESS(20,"回复成功"),
+    REPLY_FAILURE(21,"回复失败"),
     LOGIN_EXPIRE(506,"登录过期，请重新登录!"),
     ;
 

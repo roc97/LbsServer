@@ -67,13 +67,13 @@
                 like_num=like_num+1
             </when>
             <when test="likeNum==-1">
-                like_num=like_num-1
+                like_num=if(like_num>0,like_num-1,like_num)
             </when>
             <when test="unlikeNum==1">
                 unlike_num=unlike_num+1
             </when>
             <when test="unlikeNum==-1">
-                unlike_num=unlike_num-1
+                unlike_num=if(unlike_num>0,unlike_num-1,unlike_num)
             </when>
         </choose>
         where experience_id=#{experienceId}

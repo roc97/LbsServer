@@ -73,12 +73,19 @@
        where reply_id=#{replyId}
     </update>
 
-    <select id="getByExperienceId" resultMap="BaseResultMap">
-        select <include refid="columns"/>
+    <select id="getByExperienceId" resultType="com.roc.vo.ReplyVo">
+        select
+        a.content,
+        a.create_time as "createTime",
+        a.like_num as "likeNum",
+        a.unlike_num as "unlikeNum",
+        a.user_id as "userId",
+        b.name,
+        b.head_image as "headImage"
         from reply a
         left join sys_user b
         on a.user_Id=b.user_Id
-        where experience_id=#{experienceId}
+        where a.experience_id=#{experienceId}
         and main_reply_id='0'
     </select>
 

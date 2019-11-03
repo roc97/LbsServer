@@ -1,6 +1,7 @@
 package com.roc.mapper;
 
 import com.roc.pojo.Reply;
+import com.roc.vo.ReplyVo;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface ReplyMapper{
 
     int insertPojo(Reply reply);
 
-    List<Reply> getByExperienceId(int experienceId);//根据心得id获取所有主回复
+    List<ReplyVo> getByExperienceId(int experienceId);//根据心得id获取所有主回复
 
     List<Reply> getByMainReplyId(int mainReplyId);//根据主回复，获取相应的二级回复
 

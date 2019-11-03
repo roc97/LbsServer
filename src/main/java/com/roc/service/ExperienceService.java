@@ -27,4 +27,12 @@ public class ExperienceService {
     public int postExperience(Experience experience){
         return experienceMapper.insertPojo(experience);
     }
+
+    public int updateLikeNumAndUnlikeNum(Experience experience){
+        return experienceMapper.updatePojo(experience);
+    }
+
+    public Experience findExperience(int commId){
+        return experienceMapper.getPojo(commId);
+    }
 }
