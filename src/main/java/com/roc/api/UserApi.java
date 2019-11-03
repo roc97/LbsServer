@@ -1,11 +1,12 @@
 package com.roc.api;
 
-import com.google.gson.JsonObject;
 import com.roc.exception.LbsServerException;
 import com.roc.pojo.SysUser;
 import com.roc.service.UserAttentionService;
 import com.roc.service.UserService;
-import com.roc.utils.*;
+import com.roc.utils.JsonResult;
+import com.roc.utils.ResultEnum;
+import com.roc.utils.UserUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -146,4 +147,24 @@ public class UserApi {
         }
         return JsonResult.ok(ResultEnum.CANCEL_SUCCESS.getMsg());
     }
+
+    @ApiOperation(value ="获取关注信息流",response = JsonResult.class)
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "用户Id",required = true),
+            @ApiImplicitParam(name = "token", value = "token令牌",required = true)})
+    @RequestMapping(value = "/{userId}/attentionMsgList",method = RequestMethod.GET)
+    public JsonResult attentionMsgList(@PathVariable("userId")int userId,@RequestHeader("token")String token){
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
+        }
+        Map<String, Object> result = userAttentionService.getListByUserId(userId);
+        int count= (int) result.get("count");
+        result.remove("count");
+        Map<String,Object> map=new HashMap<>(16);
+        map.put("result", result);
+        map.put("count",count);
+        map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
+        return JsonResult.ok(map);
+    }
+
 }

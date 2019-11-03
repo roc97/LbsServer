@@ -39,13 +39,43 @@
         and user_attention_id=#{userAttentionId}
     </select>
 
-    <select id="getListByUserId" resultMap="BaseResultMap">
-        select <include refid="columns" />
+    <select id="getMarkListByUserId" resultType="com.roc.vo.MarkDetailVo">
+        select
+        m.mark_id as "markId",
+        m.user_id as "userId",
+        m.lat,
+        m.lng,
+        b.name,
+        b.head_image as "headImage",
+        m.title,
+        m.content
         from user_attention a
+        left join map_mark_message m
+        on a.user_attention_id=m.user_id
         left join sys_user b
-        on a.user_attention_id=b.user_id
+        on m.user_id=b.user_id
         where a.user_id=#{userId}
     </select>
+
+    <select id="getCommListByUserId" resultType="com.roc.vo.ExperienceVo">
+        select
+        e.experience_id as "commId",
+        e.user_id as "userId",
+        e.like_num as "likeNum",
+        e.unlike_num as "unlikeNum",
+        b.name,
+        b.head_image as "headImage",
+        e.title,
+        e.content
+        from user_attention a
+        left join experience e
+        on a.user_attention_id=e.user_id
+        left join sys_user b
+        on e.user_id=b.user_id
+        where a.user_id=#{userId}
+    </select>
+
+
 
     <select id="getListByAttentionId" resultMap="BaseResultMap">
         select <include refid="columns" />

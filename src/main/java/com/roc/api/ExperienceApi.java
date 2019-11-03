@@ -71,7 +71,7 @@ public class ExperienceApi {
         experience.setUserId(userId);
         experience.setTitle(title);
         int i = experienceService.postExperience(experience);
-        if(i!=0){
+        if(i!=1){
             throw new LbsServerException(ResultEnum.PUBLIC_FAILURE);
         }
         return JsonResult.ok(ResultEnum.PUBLIC_SUCCESS.getMsg());

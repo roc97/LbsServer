@@ -2,6 +2,8 @@ package com.roc.mapper;
 
 
 import com.roc.pojo.UserAttention;
+import com.roc.vo.ExperienceVo;
+import com.roc.vo.MarkDetailVo;
 
 import java.util.List;
 
@@ -15,11 +17,19 @@ public interface UserAttentionMapper{
     int insertPojo(UserAttention userAttention);
 
     /**
-     * 获取关注列表
+     * 获取关注列表的标点详细数据
      * @param userId
      * @return
      */
-    List<UserAttention> getListByUserId(int userId);
+    List<MarkDetailVo> getMarkListByUserId(int userId);
+
+
+    /**
+     * 获取关注列表的心得交流数据
+     * @param userId
+     * @return
+     */
+    List<ExperienceVo> getCommListByUserId(int userId);
 
     /**
      * 获取关注了我的列表

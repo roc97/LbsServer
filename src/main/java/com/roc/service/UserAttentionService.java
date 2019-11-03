@@ -6,11 +6,15 @@ import com.roc.mapper.UserAttentionMapper;
 import com.roc.pojo.SysUser;
 import com.roc.pojo.UserAttention;
 import com.roc.utils.ResultEnum;
+import com.roc.vo.ExperienceVo;
+import com.roc.vo.MarkDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Roc
@@ -49,8 +53,19 @@ public class UserAttentionService {
         return i;
     }
 
-     public List<UserAttention> getListByUserId(int userId){
-        return userAttentionMapper.getListByUserId(userId);
+    /**
+     * 获取关注流信息流
+     * @param userId
+     * @return
+     */
+     public Map<String,Object> getListByUserId(int userId){
+         Map<String,Object> result=new HashMap<>(16);
+         List<MarkDetailVo> markListByUserId = userAttentionMapper.getMarkListByUserId(userId);
+         List<ExperienceVo> commListByUserId = userAttentionMapper.getCommListByUserId(userId);
+         result.put("markList",markListByUserId);
+         result.put("commList",commListByUserId);
+         result.put("count",markListByUserId.size()+commListByUserId.size());
+         return result;
      }
 
      public List<UserAttention> getListByAttentionId(int userAttentionId){

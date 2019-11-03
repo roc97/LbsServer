@@ -5,11 +5,12 @@ import lombok.Data;
 /**
  * @author Roc
  * @version 1.0
- * @date 2019/10/29 20:36
- * @description 标记点视图对象
+ * @date 2019/11/3 10:01
+ * @description 标注地点详细信息视图
  */
 @Data
-public class MarkVo {
+public class MarkDetailVo {
+
     private int markId;
     /**
      * 用户id
@@ -29,4 +30,8 @@ public class MarkVo {
     private String headImage;
 
     private String name;
+
+    private String title;
+
+    private String content;
 }
