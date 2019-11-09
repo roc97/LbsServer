@@ -9,6 +9,7 @@ import com.roc.utils.ResultEnum;
 import com.roc.utils.UserUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,7 +75,8 @@ public class UserApi {
         String subffix=fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
         String newFileName=token;
         //路径待修改,到时候指定到linux的某个地方
-        String filePath="D:\\"+newFileName+"."+subffix;
+        String basePath = ClassUtils.getDefaultClassLoader().getResource("static/image").getPath();
+        String filePath=basePath+newFileName+"."+subffix;
         File file=new File(filePath);
         try {
             blobFile.transferTo(file);
