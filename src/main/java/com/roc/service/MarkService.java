@@ -2,7 +2,10 @@ package com.roc.service;
 
 import com.roc.exception.LbsServerException;
 import com.roc.mapper.MapMarkMessageMapper;
+import com.roc.mapper.SysUserMapper;
 import com.roc.pojo.MapMarkMessage;
+import com.roc.pojo.SysUser;
+import com.roc.utils.DateUtil;
 import com.roc.utils.ResultEnum;
 import com.roc.vo.MarkVo;
 import com.roc.vo.PublicCheckVo;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Roc
@@ -22,6 +26,8 @@ public class MarkService {
 
     @Autowired
     private MapMarkMessageMapper messageMapper;
+    @Autowired
+    private SysUserMapper userMapper;
 
     public List<MarkVo> findMarkList(){
         return messageMapper.getAllList();
@@ -62,5 +68,24 @@ public class MarkService {
     public List<PublicCheckVo> findCheckList(int userId){
         int status=0;
         return messageMapper.getCheckList(userId,status);
+    }
+
+    public List<MarkVo> findListByUserId(int userId)throws LbsServerException{
+        SysUser user = userMapper.getPojo(userId);
+        if(user==null){
+            throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
+        }
+        return messageMapper.getListByUserId(userId);
+    }
+
+    public void deleteMark(int markId) throws LbsServerException{
+        int i = messageMapper.deletePojo(markId);
+        if (i!=1){
+            throw new LbsServerException(ResultEnum.PUBLIC_FAILURE);
+        }
+    }
+
+    public List<Map> countTimeSlotRecords(int status,String startTime,String endTime){
+        return messageMapper.countTimeSlotRecords(status, DateUtil.stampToDate(startTime), DateUtil.stampToDate(endTime));
     }
 }

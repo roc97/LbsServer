@@ -2,6 +2,8 @@ package com.roc.api;
 
 import com.roc.exception.LbsServerException;
 import com.roc.pojo.SysUser;
+import com.roc.service.ExperienceService;
+import com.roc.service.MarkService;
 import com.roc.service.UserAttentionService;
 import com.roc.service.UserService;
 import com.roc.utils.JsonResult;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +38,10 @@ public class UserApi {
     private UserUtil userUtil;
     @Autowired
     private UserAttentionService userAttentionService;
+    @Autowired
+    private MarkService markService;
+    @Autowired
+    private ExperienceService experienceService;
 
 
     @ApiOperation(value = "用户注册功能",response = JsonResult.class)
@@ -185,6 +192,59 @@ public class UserApi {
         Map<String,Object> map=new HashMap<>(16);
         map.put("count",userList.size());
         map.put("result",userList);
+        map.put("status", HttpStatus.OK.value());
+        map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
+        return JsonResult.ok(map);
+    }
+
+    @ApiOperation(value ="心得交流/标注地点删除操作",response = JsonResult.class)
+    @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token令牌",required = true),
+            @ApiImplicitParam(name = "userId", value = "用户Id",required = true),
+            @ApiImplicitParam(name = "type", value = "删除操作的类型",required = true),
+            @ApiImplicitParam(name = "id", value = "被删除信息的id",required = true)})
+    @RequestMapping(value = "/deleteByType",method = RequestMethod.POST)
+    public JsonResult deleteByType(@RequestHeader("token")String token,
+                                   @RequestParam("userId")int userId,
+                                   @RequestParam("type")String type,
+                                   @RequestParam("id")int id) throws LbsServerException{
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
+        }
+        String comm="comm",mark="mark";
+        if(type.equals(comm)){
+            experienceService.deleteExperience(id);
+        }else if(type.equals(mark)){
+            markService.deleteMark(id);
+        }else{
+            return JsonResult.error(ResultEnum.OPERATION_FAILURE);
+        }
+        return JsonResult.ok();
+    }
+
+    @ApiOperation(value ="统计数据，状态区分，推广信息传1，心得交流传0，标注传-1",response = JsonResult.class)
+    @ApiImplicitParams({@ApiImplicitParam(name = "token", value = "token令牌",required = true),
+            @ApiImplicitParam(name = "userId", value = "用户Id",required = true),
+            @ApiImplicitParam(name = "startTime", value = "开始时间",required = true),
+            @ApiImplicitParam(name = "endTime", value = "结束时间",required = true),
+            @ApiImplicitParam(name = "status", value = "状态区分标记",required = true)})
+    @RequestMapping(value = "/countData",method = RequestMethod.POST)
+    public JsonResult countData(@RequestHeader("token")String token,@RequestParam("userId")int userId,
+                                @RequestParam("startTime")String startTime,@RequestParam("endTime")String endTime,
+                                @RequestParam("status")int status){
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
+        }
+        List<Map> result=new ArrayList<>();
+        if(status!=0){
+            result = markService.countTimeSlotRecords(status, startTime, endTime);
+        }else{
+            result=experienceService.countTimeSlotRecords(startTime,endTime);
+        }
+        Map<String,Object> map=new HashMap<>(16);
+        map.put("count",result.size());
+        map.put("result",result);
         map.put("status", HttpStatus.OK.value());
         map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
         return JsonResult.ok(map);

@@ -106,12 +106,36 @@
         order by a.create_time desc
     </select>
 
-    <select id="getListByUserId" resultMap="BaseResultMap">
-        select <include refid="columns"/>
+    <select id="countTimeSlotRecords" resultType="java.util.Map">
+        select
+        DATE_FORMAT(a.create_time, '%Y-%m-%d') AS time,
+	    COUNT(1) AS total
+        from map_mark_message a
+        where
+        <if test="status!=-1">
+           a.status=#{status} and
+        </if>
+
+        <![CDATA[
+        date_format(a.create_time, '%Y-%m-%d')>=#{startTime}
+        and date_format(a.create_time, '%Y-%m-%d')<=#{endTime}
+        ]]>
+        group by date_format(a.create_time, '%Y-%m-%d')
+    </select>
+    
+    <select id="getListByUserId" resultType="com.roc.vo.MarkVo">
+        select
+        a.user_id as "userId",
+        a.mark_id as "markId",
+        a.lng,
+        a.lat,
+        b.head_image as "headImage",
+        b.name
         from map_mark_message a
         left join sys_user b
         on a.user_id=b.user_id
         where a.user_id=#{userId}
+        order by a.create_time
     </select>
 
     <select id="getListByUserIdAndStatus" resultMap="BaseResultMap">

@@ -55,9 +55,34 @@
          where title like "%"#{title}"%"
     </select>
 
-    <select id="getListByUserId" resultMap="BaseResultMap">
-        select * from experience
+    <select id="getListByUserId" resultType="com.roc.vo.ExperienceVo">
+        select
+        e.experience_id as "commId",
+        e.user_id as "userId",
+        u.name,
+        u.head_image as "headImage",
+        e.title,
+        e.content,
+        e.like_num as "likeNum",
+        e.unlike_num as "unlikeNum"
+        from experience e
+        left join sys_user u
+        on e.user_id=u.user_id
         where user_id=#{userId}
+        order by e.create_time desc
+    </select>
+
+    <select id="countTimeSlotRecords" resultType="java.util.Map">
+        select
+        DATE_FORMAT(e.create_time, '%Y-%m-%d') AS time,
+        COUNT(1) AS total
+        from experience e
+        where
+        <![CDATA[
+        date_format(e.create_time, '%Y-%m-%d')>=#{startTime}
+        and date_format(e.create_time, '%Y-%m-%d')<=#{endTime}
+        ]]>
+        group by date_format(e.create_time, '%Y-%m-%d')
     </select>
 
     <update id="updatePojo" parameterType="Experience">

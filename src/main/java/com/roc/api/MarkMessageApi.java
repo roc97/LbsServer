@@ -213,4 +213,26 @@ public class MarkMessageApi {
         markService.updateMarkStatus(userId, markId, status, selectStatus);
         return JsonResult.ok(ResultEnum.OPERATION_SUCCESS.getMsg());
     }
+
+    @ApiOperation(value = "标注地点管理列表",response = JsonResult.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "token令牌",required = true),
+            @ApiImplicitParam(name = "userId", value = "用户Id", required = true),
+            @ApiImplicitParam(name = "selectedUserId", value = "被查看用户id", required = true)})
+    @RequestMapping(value = "/findMarkList",method = RequestMethod.POST)
+    public JsonResult findMarkList(@RequestHeader("token")String token,
+                                         @RequestParam("userId")int userId,
+                                         @RequestParam("selectedUserId")int selectedUserId){
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
+        }
+        List<MarkVo> result = markService.findListByUserId(selectedUserId);
+        Map<String,Object> map =new HashMap<>(16);
+        map.put("status", HttpStatus.OK.value());
+        map.put("count",result.size());
+        map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
+        map.put("result",result);
+        return JsonResult.ok(map);
+    }
 }
