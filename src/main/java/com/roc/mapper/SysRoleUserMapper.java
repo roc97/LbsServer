@@ -18,4 +18,5 @@ public interface SysRoleUserMapper {
     List<SysRoleUser> getByRoleId(int roleId);//获取该角色的所有用户
 
     int deletePojo(int userId,int roleId);
+
 }

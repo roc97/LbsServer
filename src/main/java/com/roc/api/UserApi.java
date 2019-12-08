@@ -7,8 +7,10 @@ import com.roc.service.UserService;
 import com.roc.utils.JsonResult;
 import com.roc.utils.ResultEnum;
 import com.roc.utils.UserUtil;
+import com.roc.vo.UserVo;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -169,4 +172,21 @@ public class UserApi {
         return JsonResult.ok(map);
     }
 
+    @ApiOperation(value ="查看用户所有信息",response = JsonResult.class)
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "用户Id",required = true),
+            @ApiImplicitParam(name = "token", value = "token令牌",required = true)})
+    @RequestMapping(value = "/{userId}/userList",method = RequestMethod.POST)
+    public JsonResult userList(@PathVariable("userId")int userId,@RequestHeader("token")String token){
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
+        }
+        List<UserVo> userList = userService.findUserList();
+        Map<String,Object> map=new HashMap<>(16);
+        map.put("count",userList.size());
+        map.put("result",userList);
+        map.put("status", HttpStatus.OK.value());
+        map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
+        return JsonResult.ok(map);
+    }
 }

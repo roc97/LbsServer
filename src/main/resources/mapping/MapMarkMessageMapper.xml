@@ -16,6 +16,8 @@
         <result column="name" property="name" jdbcType="VARCHAR"/>
     </resultMap>
 
+
+
     <sql id="columns">
       a.mark_id,
       a.user_id,
@@ -26,7 +28,7 @@
       a.status,
       a.create_time,
       b.head_image,
-      b.name
+      b.user_name as name
     </sql>
 
     <insert id="insertPojo" parameterType="MapMarkMessage">
@@ -95,11 +97,13 @@
     </select>
 
     <select id="getListByStatus" resultMap="BaseResultMap">
-        select <include refid="columns"/>
+        select
+        <include refid="columns"/>
         from map_mark_message a
         left join sys_user b
         on a.user_id=b.user_id
         where status=#{status}
+        order by a.create_time desc
     </select>
 
     <select id="getListByUserId" resultMap="BaseResultMap">

@@ -5,6 +5,7 @@ import com.roc.mapper.SysRoleUserMapper;
 import com.roc.mapper.SysUserMapper;
 import com.roc.pojo.SysUser;
 import com.roc.utils.ResultEnum;
+import com.roc.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import java.util.List;
 
 /**
  * @author p
@@ -25,6 +26,7 @@ public class UserService implements UserDetailsService {
     private SysUserMapper mapper;
     @Autowired
     private SysRoleUserMapper sysRoleUserMapper;
+
     private BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
 
 
@@ -35,7 +37,6 @@ public class UserService implements UserDetailsService {
         if(user==null){
             throw new UsernameNotFoundException(ResultEnum.NO_EXIST_USER.getMsg());
         }
-        String uuid = UUID.randomUUID().toString().replaceAll("-","");
         return user;
     }
 
@@ -83,5 +84,8 @@ public class UserService implements UserDetailsService {
         return mapper.deletePojo(id);
     }
 
+    public List<UserVo> findUserList(){
+        return mapper.getUserList();
+    }
 
 }

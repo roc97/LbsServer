@@ -48,13 +48,15 @@ public class MarkService {
         return messageMapper.getListByStatus(status);
     }
 
-    public int publicPopularMsg(int userId,int markId,int status)throws LbsServerException{
-        int unPublicStatus=0;
-        MapMarkMessage message = messageMapper.getByUserIdAndMarkId(userId, markId, unPublicStatus);
+    public void updateMarkStatus(int userId,int markId,int status,int selectStatus)throws LbsServerException{
+        MapMarkMessage message = messageMapper.getByUserIdAndMarkId(userId, markId, selectStatus);
         if (message==null){
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
-        return messageMapper.updatePojo(markId,status);
+        int i = messageMapper.updatePojo(markId, status);
+        if (i!=1){
+            throw new LbsServerException(ResultEnum.PUBLIC_FAILURE);
+        }
     }
 
     public List<PublicCheckVo> findCheckList(int userId){

@@ -6,15 +6,19 @@ import com.roc.service.MarkService;
 import com.roc.utils.JsonResult;
 import com.roc.utils.ResultEnum;
 import com.roc.utils.UserUtil;
+import com.roc.vo.MarkCheckVo;
 import com.roc.vo.MarkVo;
 import com.roc.vo.PublicCheckVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,16 +137,13 @@ public class MarkMessageApi {
     @RequestMapping(value = "/publicPopularMsg",method = RequestMethod.POST)
     public JsonResult publicPopularMsg(@RequestHeader("token")String token,
                                  @RequestParam("userId")int userId,
-                                       @RequestParam("markId")int markId){
+                                       @RequestParam("markId")int markId) throws LbsServerException{
         ResultEnum resultEnum = userUtil.checkToken(userId, token);
         if(resultEnum!=null){
             return JsonResult.error(resultEnum);
         }
-        int waitCheckStatus=3;
-        int i = markService.publicPopularMsg(userId, markId, waitCheckStatus);
-        if (i!=1){
-            throw new LbsServerException(ResultEnum.PUBLIC_FAILURE);
-        }
+        int waitCheckStatus=3,selectStatus=0;;
+        markService.updateMarkStatus(userId, markId, waitCheckStatus,selectStatus);
         return JsonResult.ok(ResultEnum.PUBLIC_SUCCESS.getMsg());
     }
 
@@ -163,5 +164,53 @@ public class MarkMessageApi {
         map.put("result",checkList);
         map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
         return JsonResult.ok(map);
+    }
+
+    @ApiOperation(value = "推广信息审核列表",response = JsonResult.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "token令牌",required = true),
+            @ApiImplicitParam(name = "userId", value = "用户Id", required = true)})
+    @RequestMapping(value = "/pcCheckList",method = RequestMethod.GET)
+    public JsonResult pcCheckList(@RequestHeader("token")String token,
+                                 @RequestParam("userId")int userId){
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if(resultEnum!=null){
+            return JsonResult.error(resultEnum);
+        }
+        int waitCheckStatus=3;
+        List<MapMarkMessage> popularList = markService.findListByStatus(waitCheckStatus);
+        List<MarkCheckVo> result=new ArrayList<>();
+        for (MapMarkMessage m:
+             popularList) {
+            MarkCheckVo mcv=new MarkCheckVo();
+            BeanUtils.copyProperties(m, mcv);
+            result.add(mcv);
+        }
+        Map<String,Object> map=new HashMap<>(16);
+        map.put("status", HttpStatus.OK.value());
+        map.put("count",popularList.size());
+        map.put("result",result);
+        map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
+        return JsonResult.ok(map);
+    }
+
+    @ApiOperation(value = "审核功能",response = JsonResult.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "token令牌",required = true),
+            @ApiImplicitParam(name = "userId", value = "用户Id", required = true),
+            @ApiImplicitParam(name = "markId", value = "标注Id", required = true),
+            @ApiImplicitParam(name = "status", value = "审核状态", required = true)})
+    @RequestMapping(value = "/markCheck",method = RequestMethod.POST)
+    public JsonResult markCheck(@RequestHeader("token")String token,
+                                  @RequestParam("userId")int userId,
+                                @RequestParam("markId")int markId,
+                                @RequestParam("status")int status) throws LbsServerException {
+        ResultEnum resultEnum = userUtil.checkToken(userId, token);
+        if (resultEnum != null) {
+            return JsonResult.error(resultEnum);
+        }
+        int selectStatus=3;
+        markService.updateMarkStatus(userId, markId, status, selectStatus);
+        return JsonResult.ok(ResultEnum.OPERATION_SUCCESS.getMsg());
     }
 }
