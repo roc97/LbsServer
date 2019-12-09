@@ -68,7 +68,7 @@
         from experience e
         left join sys_user u
         on e.user_id=u.user_id
-        where user_id=#{userId}
+        where e.user_id=#{userId}
         order by e.create_time desc
     </select>
 

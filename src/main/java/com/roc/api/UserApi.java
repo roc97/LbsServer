@@ -219,7 +219,7 @@ public class UserApi {
         }else{
             return JsonResult.error(ResultEnum.OPERATION_FAILURE);
         }
-        return JsonResult.ok();
+        return JsonResult.ok(ResultEnum.OPERATION_SUCCESS.getMsg());
     }
 
     @ApiOperation(value ="统计数据，状态区分，推广信息传1，心得交流传0，标注传-1",response = JsonResult.class)
