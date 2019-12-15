@@ -15,7 +15,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -162,25 +161,4 @@ public class ExperienceApi {
         return JsonResult.ok(map);
     }
 
-    @ApiOperation(value = "心得交流管理列表",response = JsonResult.class)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token", value = "token令牌",required = true),
-            @ApiImplicitParam(name = "userId", value = "用户Id", required = true),
-            @ApiImplicitParam(name = "selectedUserId", value = "被查看用户id", required = true)})
-    @RequestMapping(value = "/findExperienceList",method = RequestMethod.POST)
-    public JsonResult findExperienceList(@RequestHeader("token")String token,
-                                         @RequestParam("userId")int userId,
-                                         @RequestParam("selectedUserId")int selectedUserId){
-        ResultEnum resultEnum = userUtil.checkToken(userId, token);
-        if(resultEnum!=null){
-            return JsonResult.error(resultEnum);
-        }
-        List<ExperienceVo> result = experienceService.findListByUserId(selectedUserId);
-        Map<String,Object> map =new HashMap<>(16);
-        map.put("status", HttpStatus.OK.value());
-        map.put("count",result.size());
-        map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
-        map.put("result",result);
-        return JsonResult.ok(map);
-    }
 }

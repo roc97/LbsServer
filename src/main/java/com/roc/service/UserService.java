@@ -4,6 +4,7 @@ import com.roc.exception.LbsServerException;
 import com.roc.mapper.SysRoleUserMapper;
 import com.roc.mapper.SysUserMapper;
 import com.roc.pojo.SysUser;
+import com.roc.utils.OSSClientUtil;
 import com.roc.utils.ResultEnum;
 import com.roc.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -86,6 +88,22 @@ public class UserService implements UserDetailsService {
 
     public List<UserVo> findUserList(){
         return mapper.getUserList();
+    }
+
+    @Transactional(readOnly = false)
+    public String headImageUpload(MultipartFile file,long defaultSize,String token,int userId)throws LbsServerException{
+        if (file == null || file.getSize() <= 0) {
+            throw new LbsServerException(ResultEnum.FILE_UPLOAD_FAILURE);
+        }
+        OSSClientUtil ossClient=new OSSClientUtil();
+        String name = ossClient.uploadImg2Oss(file,defaultSize,token);
+        String imgUrl = ossClient.getImgUrl(name);
+        String[] split = imgUrl.split("\\?");
+        //对数据库修改
+        SysUser user = getUser(userId);
+        user.setHeadImage(split[0]);
+        updateUser(user);
+        return split[0];
     }
 
 }
