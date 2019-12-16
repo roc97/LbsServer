@@ -3,9 +3,11 @@ lbsServer.iml
 mvnw
 mvnw.cmd
 target/
+src/main/docker/**
 .mvn
 !**/src/main/**
 /src/test/
+
 
 ### STS ###
 .apt_generated

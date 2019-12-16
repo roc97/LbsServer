@@ -33,7 +33,7 @@
         )
     </insert>
 
-    <select id="getPojo" resultType="UserAttention">
+    <select id="getPojo" resultMap="BaseResultMap">
         select * from user_attention
         where user_id=#{userId}
         and user_attention_id=#{userAttentionId}
