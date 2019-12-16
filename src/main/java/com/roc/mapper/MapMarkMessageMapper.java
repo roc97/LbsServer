@@ -17,7 +17,7 @@ public interface MapMarkMessageMapper {
 
     MapMarkMessage getByUserIdAndMarkId(int userId,int markId,int status);
 
-    MapMarkMessage getDetailMessage(int markId);
+    MapMarkMessage getDetailMessage(int markId,int userId);
 
     List<MarkVo> getAllList();
 

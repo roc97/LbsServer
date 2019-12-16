@@ -45,7 +45,11 @@ public class MapMarkMessage implements Serializable {
     private String headImage;
     private String name;
     /**
-     * 判断是否关注标记
+     * 判断是否自身标记
      */
     private boolean selfStatus;
+    /**
+     * 是否关注标记
+     */
+    private boolean attentionStatus;
 }

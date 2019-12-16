@@ -34,7 +34,7 @@ public class MarkService {
     }
 
     public MapMarkMessage getDetailMessage(int userId,int markId)throws LbsServerException{
-        MapMarkMessage detailMessage = messageMapper.getDetailMessage(markId);
+        MapMarkMessage detailMessage = messageMapper.getDetailMessage(markId,userId);
         if (detailMessage==null){
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
