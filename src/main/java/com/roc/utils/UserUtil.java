@@ -33,6 +33,7 @@ public class UserUtil {
             //前端传过来的用户id与token里存储的不同
             return ResultEnum.LOGIN_EXPIRE;
         }
+        redisUtil.expire(token, 60 * 60 +redisUtil.getExpire(token));
         return null;
     }
 }

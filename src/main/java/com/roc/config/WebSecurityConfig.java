@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author p
@@ -68,11 +67,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
                         httpServletResponse.setContentType("application/json;charset=utf-8");
                         JsonResult jsonResult;
-                        if(e instanceof BadCredentialsException ||
-                        e instanceof UsernameNotFoundException){
-                            jsonResult=JsonResult.error(ResultEnum.USERNANE_OR_PASSWORD_ERROR.getMsg());
-                        }else {
-                            jsonResult=JsonResult.error(ResultEnum.LOGIN_FAILURE.getMsg());
+                        if (e instanceof BadCredentialsException ||
+                                e instanceof UsernameNotFoundException) {
+                            jsonResult = JsonResult.error(ResultEnum.USERNANE_OR_PASSWORD_ERROR.getMsg());
+                        } else {
+                            jsonResult = JsonResult.error(ResultEnum.LOGIN_FAILURE.getMsg());
                         }
                         httpServletResponse.setStatus(401);
                         PrintWriter writer = httpServletResponse.getWriter();
@@ -81,22 +80,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         writer.close();
                     }
                 })
-                .successHandler(new AuthenticationSuccessHandler(){
+                .successHandler(new AuthenticationSuccessHandler() {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                         httpServletResponse.setContentType("application/json;charset=utf-8");
                         PrintWriter writer = httpServletResponse.getWriter();
                         SysUser currentUser = UserUtil.getCurrentUser();
                         JsonResult jr = JsonResult.ok(ResultEnum.LOGIN_SUCCESS.getMsg());
-                        String uuid= UUID.randomUUID().toString().replaceAll("-","");
-                        Map<String,Object> map=new HashMap<>(16);
-                        map.put("userId",currentUser.getUserId());
-                        map.put("name",currentUser.getName());
-                        map.put("userName",currentUser.getUsername());
-                        map.put("headImage",currentUser.getHeadImage());
-                        jr.put("token",uuid);
-                        jr.put("user",map);
-                        redisUtil.set(uuid, JsonUtil.obj2String(currentUser),60*60*24);
+                        Map<String, Object> map = new HashMap<>(16);
+                        String token = MD5Utils.MD5Encode(currentUser.getUsername() + currentUser.getPassword()+currentUser.getUserId(),"utf-8");
+                        map.put("userId", currentUser.getUserId());
+                        map.put("name", currentUser.getName());
+                        map.put("userName", currentUser.getUsername());
+                        map.put("headImage", currentUser.getHeadImage());
+                        jr.put("token", token);
+                        jr.put("user", map);
+                        Object o = redisUtil.get(token);
+                        if (o != null) {
+                            redisUtil.expire(token, 60 * 60+redisUtil.getExpire(token));
+                        } else {
+                            redisUtil.set(token, JsonUtil.obj2String(currentUser), 60 * 60);
+                        }
                         writer.write(new ObjectMapper().writeValueAsString(jr));
                         writer.flush();
                         writer.close();
