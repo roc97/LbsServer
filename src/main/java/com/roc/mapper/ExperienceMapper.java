@@ -18,8 +18,6 @@ public interface ExperienceMapper extends BaseMapper<Experience> {
 
     List<ExperienceVo> getAllList();
 
-    int updateLikeNumAndUnlikeNum(int experienceId,int likeNum,int unlikeNum);//更新点赞和踩
-
     @Override
     int deletePojo(int id);
 
