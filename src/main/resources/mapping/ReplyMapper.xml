@@ -56,20 +56,14 @@
 
     <update id="updateLikeNumAndUnlikeNum">
         update reply set
-       <choose>
-           <when test="likeNum==1">
-               like_num=like_num+1
-           </when>
-           <when test="likeNum==-1">
-               like_num=like_num-1
-           </when>
-           <when test="unlikeNum==1">
-               unlike_num=unlike_num+1
-           </when>
-           <when test="unlikeNum==-1">
-               unlike_num=unlike_num-1
-           </when>
-       </choose>
+        <choose>
+            <when test="type==0">
+                like_num=#{total}
+            </when>
+            <otherwise>
+                unlike_num=#{total}
+            </otherwise>
+        </choose>
        where reply_id=#{replyId}
     </update>
 
@@ -81,12 +75,17 @@
         a.unlike_num as "unlikeNum",
         a.user_id as "userId",
         b.name,
-        b.head_image as "headImage"
+        b.head_image as "headImage",
+        c.`operate_type` AS operateStatus
         from reply a
         left join sys_user b
         on a.user_Id=b.user_Id
+        LEFT JOIN praise_or_disagree c
+        ON (c.`operate_object`=#{operateObject}
+        AND c.`operate_target`=a.`reply_id` AND c.`target_type`='1')
         where a.experience_id=#{experienceId}
         and main_reply_id='0'
+        order by a.like_num desc
     </select>
 
     <select id="getByMainReplyId" resultMap="BaseResultMap">

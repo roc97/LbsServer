@@ -40,4 +40,10 @@ public class ExperienceVo {
      * 头像
      */
     private String headImage;
+
+    /**
+     * 不加进数据库
+     * 操作状态 0该用户点了赞，1该用户点了踩
+     */
+    private String operateStatus;
 }

@@ -50,7 +50,7 @@ public class ExperienceApi {
         if(resultEnum!=null){
             return JsonResult.error(resultEnum);
         }
-        List<ExperienceVo> markList = experienceService.findAllList();
+        List<ExperienceVo> markList = experienceService.findAllList(userId);
         Map<String,Object> map=new HashMap<>(16);
         map.put("count",markList.size());
         map.put("result",markList);
@@ -106,28 +106,25 @@ public class ExperienceApi {
         return JsonResult.ok(ResultEnum.REPLY_SUCCESS.getMsg());
     }
 
-    @ApiOperation(value = "点赞心得",response = JsonResult.class)
+    @ApiOperation(value = "点赞(踩)功能",response = JsonResult.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "token令牌",required = true),
             @ApiImplicitParam(name = "userId", value = "用户Id", required = true),
-            @ApiImplicitParam(name = "commId", value = "心得Id", required = true),
-            @ApiImplicitParam(name = "likeFlag", value = "点赞标记,1点赞，-1取消点赞，默认0", required = true),
-            @ApiImplicitParam(name = "unlikeFlag", value = "踩标记,1踩，-1取消踩，默认0", required = true)})
-    @RequestMapping(value = "/likeExperience",method = RequestMethod.POST)
-    public JsonResult likeExperience(@RequestHeader("token")String token, @RequestParam("userId")int userId,
-                                      @RequestParam("commId")int commId,@RequestParam("likeFlag")int likeFlag,
-                                     @RequestParam("unlikeFlag")int unlikeFlag){
+            @ApiImplicitParam(name = "targetId", value = "目标Id", required = true),
+            @ApiImplicitParam(name = "targetType", value = "目标类型 0心得，1回复", required = true),
+            @ApiImplicitParam(name = "operateType", value = "操作类型,0点赞，1踩,-1取消操作", required = true)})
+    @RequestMapping(value = "/likeOrHate",method = RequestMethod.POST)
+    public JsonResult likeOrHate(@RequestHeader("token")String token, @RequestParam("userId")int userId,
+                                      @RequestParam("targetId")int targetId,@RequestParam("targetType")int targetType,
+                                     @RequestParam("operateType")int operateType){
         ResultEnum resultEnum = userUtil.checkToken(userId, token);
         if(resultEnum!=null){
             return JsonResult.error(resultEnum);
         }
-        Experience experience=new Experience();
-        experience.setExperienceId(commId);
-        experience.setUnlikeNum(unlikeFlag);
-        experience.setLikeNum(likeFlag);
-        int i = experienceService.updateLikeNumAndUnlikeNum(experience);
-        if(i!=1){
-            throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
+        try {
+            experienceService.likeOrHate(userId,targetId,targetType,operateType);
+        }catch (LbsServerException e){
+            return JsonResult.error(e.getMessage());
         }
         return JsonResult.ok(ResultEnum.OPERATION_SUCCESS.getMsg());
     }
@@ -144,11 +141,11 @@ public class ExperienceApi {
         if(resultEnum!=null){
             return JsonResult.error(resultEnum);
         }
-        Experience experience = experienceService.findExperience(commId);
+        Experience experience = experienceService.findExperience(userId,commId);
         if(experience==null){
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
-        List<ReplyVo> listByCommId = replyService.findListByCommId(commId);
+        List<ReplyVo> listByCommId = replyService.findListByCommId(commId,userId);
         Map<String,Object> map =new HashMap<>(16);
         map.put("count",listByCommId.size());
         map.put("result",listByCommId);
@@ -157,6 +154,7 @@ public class ExperienceApi {
         map.put("likeNum",experience.getLikeNum());
         map.put("unlikeNum",experience.getUnlikeNum());
         map.put("createTime",experience.getCreateTime());
+        map.put("operateStatus",experience.getOperateStatus());
         map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
         return JsonResult.ok(map);
     }

@@ -24,8 +24,8 @@ public class ReplyService {
         return replyMapper.insertPojo(reply);
     }
 
-    public List<ReplyVo> findListByCommId(int commId){
-        return replyMapper.getByExperienceId(commId);
+    public List<ReplyVo> findListByCommId(int commId,int operateObject){
+        return replyMapper.getByExperienceId(commId,operateObject);
     }
 
 }

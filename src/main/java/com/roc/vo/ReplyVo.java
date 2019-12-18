@@ -26,4 +26,10 @@ public class ReplyVo {
     private String content;
 
     private Timestamp createTime;
+
+    /**
+     * 不加进数据库
+     * 操作状态 0该用户点了赞，1该用户点了踩
+     */
+    private String operateStatus;
 }

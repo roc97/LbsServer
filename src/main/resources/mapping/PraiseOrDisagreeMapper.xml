@@ -18,7 +18,23 @@
         )
     </insert>
 
-    <delete id="deletePojo">
+    <select id="getPojo" resultType="PraiseOrDisagree">
+        select id
+        from praise_or_disagree
+        where operate_object=#{operateObject}
+        and operate_target=#{operateTarget}
+        and target_type=#{targetType}
+        limit 1
+    </select>
+
+    <select id="countLikeNumORHateNum" resultType="int">
+        select count(*) from praise_or_disagree
+        where operate_target=#{operateTarget}
+        and target_type=#{targetType}
+        and operate_type=#{operateType}
+    </select>
+
+    <delete id="deletePojo" parameterType="PraiseOrDisagree">
         delete from praise_or_disagree
         where operate_object=#{operateObject}
         and operate_target=#{operateTarget}
