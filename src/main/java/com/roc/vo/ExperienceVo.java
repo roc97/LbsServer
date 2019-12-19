@@ -21,6 +21,10 @@ public class ExperienceVo {
      */
     private String title;
     /**
+     * 配图
+     */
+    private String image;
+    /**
      * 内容
      */
     private String content;

@@ -8,7 +8,8 @@ import com.roc.mapper.SysUserMapper;
 import com.roc.pojo.Experience;
 import com.roc.pojo.PraiseOrDisagree;
 import com.roc.pojo.SysUser;
-import com.roc.utils.DateUtil;
+import com.roc.utils.MD5Utils;
+import com.roc.utils.OSSClientUtil;
 import com.roc.utils.ResultEnum;
 import com.roc.vo.ExperienceVo;
 import com.roc.vo.ReplyVo;
@@ -16,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Roc
@@ -48,8 +51,17 @@ public class ExperienceService {
         return map;
     }
 
-    public void postExperience(int userId,String content,String title){
+    public void postExperience(int userId, String content, String title, MultipartFile file,String token){
         Experience experience=new Experience();
+        if (file!=null && file.getSize()>0){
+            long defaultFileSize = 3145728;
+            String imageName= MD5Utils.MD5Encode(token+ UUID.randomUUID().toString(),"utf-8");
+            OSSClientUtil ossClient=new OSSClientUtil();
+            String name = ossClient.uploadImg2Oss(file,defaultFileSize,imageName);
+            String imgUrl = ossClient.getImgUrl(name);
+            String[] split = imgUrl.split("\\?");
+            experience.setImage(split[0]);
+        }
         experience.setContent(content);
         experience.setUserId(userId);
         experience.setTitle(title);
@@ -68,6 +80,7 @@ public class ExperienceService {
         List<ReplyVo> listByCommId = replyMapper.getByExperienceId(commId, operateObject);
         map.put("count", listByCommId.size());
         map.put("result", listByCommId);
+        map.put("image",experience.getImage());
         map.put("title", experience.getTitle());
         map.put("content", experience.getContent());
         map.put("likeNum", experience.getLikeNum());

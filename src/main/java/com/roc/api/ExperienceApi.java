@@ -1,25 +1,16 @@
 package com.roc.api;
 
-import com.roc.exception.LbsServerException;
-import com.roc.pojo.Experience;
-import com.roc.pojo.Reply;
 import com.roc.service.ExperienceService;
 import com.roc.service.ReplyService;
 import com.roc.utils.JsonResult;
 import com.roc.utils.ResultEnum;
 import com.roc.utils.UserUtil;
-import com.roc.vo.ExperienceVo;
-import com.roc.vo.ReplyVo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,9 +52,10 @@ public class ExperienceApi {
             @ApiImplicitParam(name = "content", value = "心得内容", required = true)})
     @RequestMapping(value = "/postExperience", method = RequestMethod.POST)
     public JsonResult postExperience(@RequestHeader("token") String token, @RequestParam("userId") int userId,
-                                     @RequestParam("title") String title, @RequestParam("content") String content) {
+                                     @RequestParam("title") String title, @RequestParam("content") String content,
+                                     @ApiParam(value = "png/jpeg文件", name = "file") @RequestParam(value = "file", required = false) MultipartFile file) {
         userUtil.checkToken(userId, token);
-        experienceService.postExperience(userId, content, title);
+        experienceService.postExperience(userId, content, title,file,token);
         return JsonResult.ok(ResultEnum.PUBLIC_SUCCESS);
     }
 
@@ -105,9 +97,8 @@ public class ExperienceApi {
     @RequestMapping(value = "/experienceDetail", method = RequestMethod.POST)
     public JsonResult experienceDetail(@RequestHeader("token") String token, @RequestParam("userId") int userId,
                                        @RequestParam("commId") int commId) {
-        Map<String, Object> map = new HashMap<>(16);
         userUtil.checkToken(userId, token);
-        experienceService.findExperienceDetail(userId, commId);
+        Map<String, Object> map=experienceService.findExperienceDetail(userId, commId);
         return JsonResult.ok(map);
     }
 

@@ -32,6 +32,10 @@ public class Experience implements Serializable {
      * 踩数
      */
     private int unlikeNum;
+    /**
+     * 配图
+     */
+    private String image;
 
     /**
      * 不加进数据库

@@ -12,6 +12,7 @@
         <result column="unlike_num" property="unlikeNum" jdbcType="INTEGER"/>
         <result column="operate_status" property="operateStatus" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="image" property="image" jdbcType="VARCHAR"/>
     </resultMap>
 
 
@@ -21,13 +22,15 @@
         title,
         content,
         like_num,
-        unlike_num
+        unlike_num,
+        image
         ) values (
         #{userId},
         #{title},
         #{content},
         #{likeNum},
-        #{unlikeNum}
+        #{unlikeNum},
+        #{image}
         )
     </insert>
 
@@ -46,6 +49,7 @@
           e.user_id as "userId",
           u.name,
           u.head_image as "headImage",
+          e.image,
           e.title,
           e.content,
           e.like_num as "likeNum",
@@ -68,6 +72,7 @@
         select
         e.experience_id as "commId",
         e.user_id as "userId",
+        e.image,
         u.name,
         u.head_image as "headImage",
         e.title,
