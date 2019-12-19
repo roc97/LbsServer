@@ -49,6 +49,12 @@ public class JsonResult extends HashMap<String, Object> {
 		return r;
 	}
 
+	public static JsonResult ok(ResultEnum resultEnum) {
+		JsonResult r = new JsonResult();
+		r.put("msg", resultEnum.getMsg());
+		return r;
+	}
+
 	public static JsonResult ok(JsonResult r,String msg) {
 		r.put("msg", msg);
 		return r;

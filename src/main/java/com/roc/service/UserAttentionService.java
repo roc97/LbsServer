@@ -5,6 +5,7 @@ import com.roc.mapper.SysUserMapper;
 import com.roc.mapper.UserAttentionMapper;
 import com.roc.pojo.SysUser;
 import com.roc.pojo.UserAttention;
+import com.roc.utils.JsonResult;
 import com.roc.utils.ResultEnum;
 import com.roc.vo.ExperienceVo;
 import com.roc.vo.MarkDetailVo;
@@ -35,11 +36,11 @@ public class UserAttentionService {
     }
 
     @Transactional(rollbackFor = LbsServerException.class)
-    public int addAttention(int userId,int followId){
+    public void addAttention(int userId,int followId){
         int i=1;
         UserAttention userAttention = getUserAttention(userId, followId);
         if(userAttention!=null){
-            return i;
+            throw new LbsServerException(ResultEnum.ATTENTION_EXIST);
         }
         SysUser user = sysUserMapper.getPojo(userId);
         SysUser followedUser = sysUserMapper.getPojo(followId);
@@ -50,7 +51,9 @@ public class UserAttentionService {
         userAttention.setUserId(userId);
         userAttention.setUserAttentionId(followId);
         i=userAttentionMapper.insertPojo(userAttention);
-        return i;
+        if (i != 1) {
+            throw new LbsServerException(ResultEnum.ATTENTION_FAILURE);
+        }
     }
 
     /**
@@ -58,21 +61,29 @@ public class UserAttentionService {
      * @param userId
      * @return
      */
-     public Map<String,Object> getListByUserId(int userId){
+     public Map<String,Object> getAttentionList(int userId){
          Map<String,Object> result=new HashMap<>(16);
+         Map<String, Object> map = new HashMap<>(16);
          List<MarkDetailVo> markListByUserId = userAttentionMapper.getMarkListByUserId(userId);
          List<ExperienceVo> commListByUserId = userAttentionMapper.getCommListByUserId(userId);
          result.put("markList",markListByUserId);
          result.put("commList",commListByUserId);
          result.put("count",markListByUserId.size()+commListByUserId.size());
-         return result;
+         int count = (int) result.get("count");
+         result.remove("count");
+         map.put("result", result);
+         map.put("count", count);
+         map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
+         return map;
      }
 
-     public List<UserAttention> getListByAttentionId(int userAttentionId){
-        return userAttentionMapper.getListByAttentionId(userAttentionId);
-     }
-
-     public int cancelAttention(int userId,int followId){
-        return userAttentionMapper.deletePojo(userId,followId);
+     public void cancelAttention(int userId,int followId){
+         if ((userId <= 0) || (followId <= 0)) {
+             throw new LbsServerException(ResultEnum.JSON_PARSE_EXCEPTION);
+         }
+         int i = userAttentionMapper.deletePojo(userId, followId);
+         if (i != 1) {
+             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
+         }
      }
 }

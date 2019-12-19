@@ -11,10 +11,13 @@ import com.roc.pojo.SysUser;
 import com.roc.utils.DateUtil;
 import com.roc.utils.ResultEnum;
 import com.roc.vo.ExperienceVo;
+import com.roc.vo.ReplyVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,39 +39,62 @@ public class ExperienceService {
     @Autowired
     private ReplyMapper replyMapper;
 
-    public List<ExperienceVo> findAllList(int userId){
-        return experienceMapper.getAllList(userId);
+    public Map<String,Object> findExperienceHomeData(int userId) {
+        Map<String,Object> map=new HashMap<>(16);
+        List<ExperienceVo> markList = experienceMapper.getAllList(userId);
+        map.put("count",markList.size());
+        map.put("result",markList);
+        map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
+        return map;
     }
 
-    public int postExperience(Experience experience){
-        return experienceMapper.insertPojo(experience);
-    }
-
-    public Experience findExperience(int operateObject,int commId){
-        return experienceMapper.getPojo(operateObject,commId);
-    }
-
-    public List<ExperienceVo> findListByUserId(int userId)throws LbsServerException{
-        SysUser user = userMapper.getPojo(userId);
-        if(user==null){
-            throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
-        }
-        return experienceMapper.getListByUserId(userId);
-    }
-
-    public void deleteExperience(int experienceId) throws LbsServerException{
-        int i = experienceMapper.deletePojo(experienceId);
-        if (i!=1){
+    public void postExperience(int userId,String content,String title){
+        Experience experience=new Experience();
+        experience.setContent(content);
+        experience.setUserId(userId);
+        experience.setTitle(title);
+        int i = experienceMapper.insertPojo(experience);
+        if(i!=1){
             throw new LbsServerException(ResultEnum.PUBLIC_FAILURE);
         }
     }
 
-    public List<Map> countTimeSlotRecords(String startTime, String endTime){
-        return experienceMapper.countTimeSlotRecords(DateUtil.stampToDate(startTime), DateUtil.stampToDate(endTime));
+    public Map<String, Object> findExperienceDetail(int operateObject,int commId){
+        Map<String, Object> map = new HashMap<>(16);
+        Experience experience = experienceMapper.getPojo(operateObject, commId);
+        if (experience == null) {
+            throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
+        }
+        List<ReplyVo> listByCommId = replyMapper.getByExperienceId(commId, operateObject);
+        map.put("count", listByCommId.size());
+        map.put("result", listByCommId);
+        map.put("title", experience.getTitle());
+        map.put("content", experience.getContent());
+        map.put("likeNum", experience.getLikeNum());
+        map.put("unlikeNum", experience.getUnlikeNum());
+        map.put("createTime", experience.getCreateTime());
+        map.put("operateStatus", experience.getOperateStatus());
+        map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
+        return map;
     }
 
+    public Map<String, Object> findExperienceAdminData(int userId){
+        Map<String, Object> map = new HashMap<>(16);
+        SysUser user = userMapper.getPojo(userId);
+        if(user==null){
+            throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
+        }
+        List<ExperienceVo> result = experienceMapper.getListByUserId(userId);
+        map.put("status", HttpStatus.OK.value());
+        map.put("count", result.size());
+        map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
+        map.put("result", result);
+        return map;
+    }
+
+
     @Transactional(readOnly = false)
-    public void likeOrHate(int userId,int targetId,int targetType,int operateType)throws LbsServerException{
+    public void likeOrHate(int userId,int targetId,int targetType,int operateType){
         PraiseOrDisagree pojo = praiseOrDisagreeMapper.getPojo(userId, targetId, targetType);
         if(pojo!=null && operateType!=-1){
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);

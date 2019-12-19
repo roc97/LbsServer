@@ -7,11 +7,16 @@ import com.roc.pojo.MapMarkMessage;
 import com.roc.pojo.SysUser;
 import com.roc.utils.DateUtil;
 import com.roc.utils.ResultEnum;
+import com.roc.vo.MarkCheckVo;
 import com.roc.vo.MarkVo;
 import com.roc.vo.PublicCheckVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +34,17 @@ public class MarkService {
     @Autowired
     private SysUserMapper userMapper;
 
-    public List<MarkVo> findMarkList(){
-        return messageMapper.getAllList();
+    public Map<String, Object> findMarkList(){
+        List<MarkVo> markList = messageMapper.getAllList();
+        Map<String, Object> map = new HashMap<>(16);
+        map.put("count", markList.size());
+        map.put("result", markList);
+        map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
+        return map;
     }
 
-    public MapMarkMessage getDetailMessage(int userId,int markId)throws LbsServerException{
+    public Map<String, Object> getDetailMessage(int userId,int markId){
+        Map<String, Object> map = new HashMap<>(16);
         MapMarkMessage detailMessage = messageMapper.getDetailMessage(markId,userId);
         if (detailMessage==null){
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
@@ -43,19 +54,46 @@ public class MarkService {
         }else {
             detailMessage.setSelfStatus(true);
         }
-        return detailMessage;
+        map.put("markDetail", detailMessage);
+        map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
+        return map;
     }
 
-    public int publicMessage(MapMarkMessage message){
-       return messageMapper.insertPojo(message);
+    public void publicMessage(double lng,double lat,int userId,String title,String content){
+        MapMarkMessage message=new MapMarkMessage();
+        //未推广
+        message.setStatus(0);
+        message.setLng(lng);
+        message.setLat(lat);
+        message.setUserId(userId);
+        message.setTitle(title);
+        message.setContent(content);
+        int i = messageMapper.insertPojo(message);
+        if (i!=1){
+            throw new LbsServerException(ResultEnum.PUBLIC_FAILURE);
+        }
     }
 
-    public List<MapMarkMessage> findListByStatus(int status){
-        return messageMapper.getListByStatus(status);
+    public Map<String,Object> getMarkCheckData(){
+        Map<String,Object> map=new HashMap<>(16);
+        int waitCheckStatus=3;
+        List<MapMarkMessage> popularList = messageMapper.getListByStatus(waitCheckStatus);
+        List<MarkCheckVo> result=new ArrayList<>();
+        for (MapMarkMessage m:
+                popularList) {
+            MarkCheckVo mcv=new MarkCheckVo();
+            BeanUtils.copyProperties(m, mcv);
+            result.add(mcv);
+        }
+        map.put("status", HttpStatus.OK.value());
+        map.put("count",popularList.size());
+        map.put("result",result);
+        map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
+        return map;
     }
 
-    public void updateMarkStatus(int userId,int markId,int status,int selectStatus)throws LbsServerException{
-        MapMarkMessage message = messageMapper.getByUserIdAndMarkId(userId, markId, selectStatus);
+    public void updateMarkStatus(int markId,int status,int selectStatus){
+        MapMarkMessage message = messageMapper.getByMarkId(markId, selectStatus);
         if (message==null){
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
@@ -65,27 +103,38 @@ public class MarkService {
         }
     }
 
-    public List<PublicCheckVo> findCheckList(int userId){
+    public Map<String, Object> findCheckList(int userId){
         int status=0;
-        return messageMapper.getCheckList(userId,status);
+        Map<String, Object> map = new HashMap<>(16);
+        List<PublicCheckVo> checkList = messageMapper.getCheckList(userId, status);
+        map.put("count", checkList.size());
+        map.put("result", checkList);
+        map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
+        return map;
     }
 
-    public List<MarkVo> findListByUserId(int userId)throws LbsServerException{
+    public Map<String, Object> findMarkAdminData(int userId){
+        Map<String, Object> map = new HashMap<>(16);
         SysUser user = userMapper.getPojo(userId);
         if(user==null){
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
-        return messageMapper.getListByUserId(userId);
+        List<MarkVo> result = messageMapper.getListByUserId(userId);
+        map.put("status", HttpStatus.OK.value());
+        map.put("count", result.size());
+        map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
+        map.put("result", result);
+        return map;
     }
 
-    public void deleteMark(int markId) throws LbsServerException{
-        int i = messageMapper.deletePojo(markId);
-        if (i!=1){
-            throw new LbsServerException(ResultEnum.PUBLIC_FAILURE);
-        }
+    public Map<String, Object> schoolPublish(){
+        int successStatus = 1;
+        List<MapMarkMessage> popularList = messageMapper.getListByStatus(successStatus);
+        Map<String, Object> map = new HashMap<>(16);
+        map.put("count", popularList.size());
+        map.put("result", popularList);
+        map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
+        return map;
     }
 
-    public List<Map> countTimeSlotRecords(int status,String startTime,String endTime){
-        return messageMapper.countTimeSlotRecords(status, DateUtil.stampToDate(startTime), DateUtil.stampToDate(endTime));
-    }
 }

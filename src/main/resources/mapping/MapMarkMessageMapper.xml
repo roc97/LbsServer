@@ -49,7 +49,7 @@
         )
     </insert>
 
-    <select id="getByUserIdAndMarkId" resultType="MapMarkMessage">
+    <select id="getByMarkId" resultType="MapMarkMessage">
         select
          a.mark_id as "markId",
          a.user_id as "userId",
@@ -59,8 +59,7 @@
          a.content,
          a.status
          from map_mark_message a
-         where a.user_id=#{userId}
-         and a.mark_id=#{markId}
+         where a.mark_id=#{markId}
          and status=#{status}
     </select>
 

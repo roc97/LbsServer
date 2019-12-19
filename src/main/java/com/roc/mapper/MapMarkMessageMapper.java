@@ -15,7 +15,7 @@ public interface MapMarkMessageMapper {
 
     int insertPojo(MapMarkMessage mapMarkMessage);
 
-    MapMarkMessage getByUserIdAndMarkId(int userId,int markId,int status);
+    MapMarkMessage getByMarkId(int markId,int status);
 
     MapMarkMessage getDetailMessage(int markId,int userId);
 

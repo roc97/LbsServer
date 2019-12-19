@@ -1,7 +1,9 @@
 package com.roc.service;
 
+import com.roc.exception.LbsServerException;
 import com.roc.mapper.ReplyMapper;
 import com.roc.pojo.Reply;
+import com.roc.utils.ResultEnum;
 import com.roc.vo.ReplyVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,14 @@ public class ReplyService {
     @Autowired
     private ReplyMapper replyMapper;
 
-    public int replyExperience(Reply reply){
-        return replyMapper.insertPojo(reply);
+    public void replyExperience(int userId,int commId,String content){
+        Reply reply = new Reply();
+        reply.setContent(content);
+        reply.setUserId(userId);
+        reply.setExperienceId(commId);
+        int i = replyMapper.insertPojo(reply);
+        if (i != 1) {
+            throw new LbsServerException(ResultEnum.REPLY_FAILURE);
+        }
     }
-
-    public List<ReplyVo> findListByCommId(int commId,int operateObject){
-        return replyMapper.getByExperienceId(commId,operateObject);
-    }
-
 }
