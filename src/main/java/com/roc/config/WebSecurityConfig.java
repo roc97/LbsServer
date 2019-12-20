@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roc.pojo.SysUser;
 import com.roc.service.UserService;
 import com.roc.utils.*;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -73,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         } else {
                             jsonResult = JsonResult.error(ResultEnum.LOGIN_FAILURE.getMsg());
                         }
-                        httpServletResponse.setStatus(401);
+                        httpServletResponse.setStatus(HttpStatus.SC_UNAUTHORIZED);
                         PrintWriter writer = httpServletResponse.getWriter();
                         writer.write(new ObjectMapper().writeValueAsString(jsonResult));
                         writer.flush();
@@ -140,13 +141,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers("/index.html","/static/**","/login_p","/swagger-ui.html","/v2/**","/swagger-resources/**");
         web.ignoring().antMatchers("/login_p")
                 .antMatchers("/static/**")
                 .antMatchers("/swagger-ui.html")
                 .antMatchers("/webjars/**")
                 .antMatchers("/v2/**")
                 .antMatchers("/swagger-resources/**")
-                .antMatchers("/user/register**");
+                .antMatchers("/user/register**")
+                .antMatchers("/index.html");
     }
 }

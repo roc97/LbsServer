@@ -66,12 +66,16 @@
         b.name,
         b.head_image as "headImage",
         e.title,
-        e.content
+        e.content,
+        c.operate_type AS operateStatus
         from user_attention a
         left join experience e
         on a.user_attention_id=e.user_id
         left join sys_user b
         on e.user_id=b.user_id
+        LEFT JOIN praise_or_disagree c
+	    ON (c.operate_object=#{userId}
+        AND c.operate_target=e.experience_id AND c.target_type='0')
         where a.user_id=#{userId}
     </select>
 

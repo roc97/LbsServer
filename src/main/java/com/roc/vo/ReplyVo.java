@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 @Data
 public class ReplyVo {
 
+    private int replyId;
+
     private int userId;
 
     private String name;

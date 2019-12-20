@@ -69,6 +69,7 @@
 
     <select id="getByExperienceId" resultType="com.roc.vo.ReplyVo">
         select
+        a.reply_id as "replyId",
         a.content,
         a.create_time as "createTime",
         a.like_num as "likeNum",
