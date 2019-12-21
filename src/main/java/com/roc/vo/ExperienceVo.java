@@ -50,4 +50,8 @@ public class ExperienceVo {
      * 操作状态 0该用户点了赞，1该用户点了踩
      */
     private String operateStatus;
+    /**
+     * 回复总数
+     */
+    private int replyCount;
 }

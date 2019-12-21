@@ -110,4 +110,9 @@
         delete from reply
         where main_reply_id=#{mainReplyId}
     </delete>
+    
+    <delete id="deleteByExperienceId">
+        delete from reply
+        where experience_id=#{experienceId}
+    </delete>
 </mapper>

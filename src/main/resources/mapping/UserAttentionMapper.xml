@@ -58,25 +58,32 @@
     </select>
 
     <select id="getCommListByUserId" resultType="com.roc.vo.ExperienceVo">
-        select
-        e.experience_id as "commId",
-        e.user_id as "userId",
-        e.like_num as "likeNum",
-        e.unlike_num as "unlikeNum",
-        b.name,
-        b.head_image as "headImage",
-        e.title,
-        e.content,
-        c.operate_type AS operateStatus
-        from user_attention a
-        left join experience e
-        on a.user_attention_id=e.user_id
-        left join sys_user b
-        on e.user_id=b.user_id
-        LEFT JOIN praise_or_disagree c
-	    ON (c.operate_object=#{userId}
-        AND c.operate_target=e.experience_id AND c.target_type='0')
-        where a.user_id=#{userId}
+        SELECT * FROM(
+            select
+            e.experience_id as "commId",
+            e.user_id as "userId",
+            e.like_num as "likeNum",
+            e.unlike_num as "unlikeNum",
+            b.name,
+            b.head_image as "headImage",
+            e.title,
+            e.content,
+            c.operate_type AS operateStatus
+            from user_attention a
+            left join experience e
+            on a.user_attention_id=e.user_id
+            left join sys_user b
+            on e.user_id=b.user_id
+            LEFT JOIN praise_or_disagree c
+            ON (c.operate_object=#{userId}
+            AND c.operate_target=e.experience_id AND c.target_type='0')
+            where a.user_id=#{userId}
+            ORDER BY e.create_time DESC) f
+            LEFT JOIN
+            (SELECT a.experience_id,COUNT(*) replyCount
+             FROM reply a
+             GROUP BY a.experience_id) d
+             ON f.commId=d.experience_id
     </select>
 
 

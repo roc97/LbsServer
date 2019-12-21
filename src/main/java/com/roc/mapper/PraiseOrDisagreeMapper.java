@@ -28,10 +28,9 @@ public interface PraiseOrDisagreeMapper {
 
     /**
      * 删除实体
-     * @param praiseOrDisagree 对象
      * @return
      */
-    int deletePojo(PraiseOrDisagree praiseOrDisagree);
+    int deletePojo(int id);
 
     /**
      * 统计该心得（回复）的点赞（踩）总数

@@ -35,4 +35,11 @@ public interface ReplyMapper{
 
     int cascadeDelete(int mainReplyId);//主回复被删,级联删除关联主回复的
 
+    /**
+     * 删除心得相关的回复
+     * @param experienceId
+     * @return
+     */
+    int deleteByExperienceId(int experienceId);
+
 }

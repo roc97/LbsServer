@@ -42,22 +42,22 @@ public class ExperienceService {
     @Autowired
     private ReplyMapper replyMapper;
 
-    public Map<String,Object> findExperienceHomeData(int userId) {
-        Map<String,Object> map=new HashMap<>(16);
+    public Map<String, Object> findExperienceHomeData(int userId) {
+        Map<String, Object> map = new HashMap<>(16);
         List<ExperienceVo> markList = experienceMapper.getAllList(userId);
-        map.put("count",markList.size());
-        map.put("result",markList);
-        map.put("msg",ResultEnum.OPERATION_SUCCESS.getMsg());
+        map.put("count", markList.size());
+        map.put("result", markList);
+        map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
         return map;
     }
 
-    public void postExperience(int userId, String content, String title, MultipartFile file,String token){
-        Experience experience=new Experience();
-        if (file!=null && file.getSize()>0){
+    public void postExperience(int userId, String content, String title, MultipartFile file, String token) {
+        Experience experience = new Experience();
+        if (file != null && file.getSize() > 0) {
             long defaultFileSize = 3145728;
-            String imageName= MD5Utils.MD5Encode(token+ UUID.randomUUID().toString(),"utf-8");
-            OSSClientUtil ossClient=new OSSClientUtil();
-            String name = ossClient.uploadImg2Oss(file,defaultFileSize,imageName);
+            String imageName = MD5Utils.MD5Encode(token + UUID.randomUUID().toString(), "utf-8");
+            OSSClientUtil ossClient = new OSSClientUtil();
+            String name = ossClient.uploadImg2Oss(file, defaultFileSize, imageName);
             String imgUrl = ossClient.getImgUrl(name);
             String[] split = imgUrl.split("\\?");
             experience.setImage(split[0]);
@@ -66,12 +66,12 @@ public class ExperienceService {
         experience.setUserId(userId);
         experience.setTitle(title);
         int i = experienceMapper.insertPojo(experience);
-        if(i!=1){
+        if (i != 1) {
             throw new LbsServerException(ResultEnum.PUBLIC_FAILURE);
         }
     }
 
-    public Map<String, Object> findExperienceDetail(int operateObject,int commId){
+    public Map<String, Object> findExperienceDetail(int operateObject, int commId) {
         Map<String, Object> map = new HashMap<>(16);
         Experience experience = experienceMapper.getPojo(operateObject, commId);
         if (experience == null) {
@@ -80,7 +80,7 @@ public class ExperienceService {
         List<ReplyVo> listByCommId = replyMapper.getByExperienceId(commId, operateObject);
         map.put("count", listByCommId.size());
         map.put("result", listByCommId);
-        map.put("image",experience.getImage());
+        map.put("image", experience.getImage());
         map.put("title", experience.getTitle());
         map.put("content", experience.getContent());
         map.put("likeNum", experience.getLikeNum());
@@ -91,10 +91,10 @@ public class ExperienceService {
         return map;
     }
 
-    public Map<String, Object> findExperienceAdminData(int userId){
+    public Map<String, Object> findExperienceAdminData(int userId) {
         Map<String, Object> map = new HashMap<>(16);
         SysUser user = userMapper.getPojo(userId);
-        if(user==null){
+        if (user == null) {
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
         List<ExperienceVo> result = experienceMapper.getListByUserId(userId);
@@ -107,33 +107,44 @@ public class ExperienceService {
 
 
     @Transactional(readOnly = false)
-    public void likeOrHate(int userId,int targetId,int targetType,int operateType){
+    public void likeOrHate(int userId, int targetId, int targetType, int operateType) {
         PraiseOrDisagree pojo = praiseOrDisagreeMapper.getPojo(userId, targetId, targetType);
-        if(pojo!=null && operateType!=-1){
+        if (pojo != null && operateType != -1) {
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
-        pojo=new PraiseOrDisagree();
-        pojo.setOperateObject(userId);
-        pojo.setOperateTarget(targetId);
-        pojo.setTargetType(targetType);
-        pojo.setOperateType(operateType);
-        int i =0;
-        if (operateType==-1){
-            i=praiseOrDisagreeMapper.deletePojo(pojo);
-        }else {
-            i=praiseOrDisagreeMapper.insertPojo(pojo);
+        int i = 0;
+        int delType = 0;
+        int total = praiseOrDisagreeMapper.countLikeNumORHateNum(targetId, targetType, operateType);
+        if (operateType == -1) {
+            delType = pojo.getOperateType();
+            total= praiseOrDisagreeMapper.countLikeNumORHateNum(targetId, targetType, delType);
+            i = praiseOrDisagreeMapper.deletePojo(pojo.getId());
+        } else {
+            pojo = new PraiseOrDisagree();
+            pojo.setOperateObject(userId);
+            pojo.setOperateTarget(targetId);
+            pojo.setTargetType(targetType);
+            pojo.setOperateType(operateType);
+            i = praiseOrDisagreeMapper.insertPojo(pojo);
         }
-        if (i==0){
+        if (i == 0) {
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
-        int total= praiseOrDisagreeMapper.countLikeNumORHateNum(targetId, targetType, operateType);
-        int j=0;
-        if (targetType==0){
-            j= experienceMapper.updateLikeNumOrHateNum(targetId, operateType, total);
-        }else if(targetType==1){
-            j= replyMapper.updateLikeNumAndUnlikeNum(targetId,operateType,total);
+        int j = 0;
+        if (targetType == 0) {
+            if (operateType == -1) {
+                j = experienceMapper.updateLikeNumOrHateNum(targetId, delType, total - 1);
+            } else {
+                j = experienceMapper.updateLikeNumOrHateNum(targetId, operateType, total + 1);
+            }
+        } else if (targetType == 1) {
+            if (operateType == -1) {
+                j = replyMapper.updateLikeNumAndUnlikeNum(targetId, delType, total - 1);
+            } else {
+                j = replyMapper.updateLikeNumAndUnlikeNum(targetId, operateType, total + 1);
+            }
         }
-        if(j==0){
+        if (j == 0) {
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
     }

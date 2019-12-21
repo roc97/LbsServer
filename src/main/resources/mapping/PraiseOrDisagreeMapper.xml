@@ -19,7 +19,10 @@
     </insert>
 
     <select id="getPojo" resultType="PraiseOrDisagree">
-        select id
+        select id,operate_type as operateType,
+        operate_object as operateObject,
+        target_type as targetType,
+        operate_target as  operateTarget
         from praise_or_disagree
         where operate_object=#{operateObject}
         and operate_target=#{operateTarget}
@@ -34,11 +37,9 @@
         and operate_type=#{operateType}
     </select>
 
-    <delete id="deletePojo" parameterType="PraiseOrDisagree">
+    <delete id="deletePojo">
         delete from praise_or_disagree
-        where operate_object=#{operateObject}
-        and operate_target=#{operateTarget}
-        and target_type=#{targetType}
+        where id=#{id}
     </delete>
 
 </mapper>

@@ -1,13 +1,9 @@
 package com.roc.service;
 
 import com.roc.exception.LbsServerException;
-import com.roc.mapper.ExperienceMapper;
-import com.roc.mapper.MapMarkMessageMapper;
-import com.roc.mapper.SysRoleUserMapper;
-import com.roc.mapper.SysUserMapper;
+import com.roc.mapper.*;
 import com.roc.pojo.SysUser;
 import com.roc.utils.DateUtil;
-import com.roc.utils.JsonResult;
 import com.roc.utils.OSSClientUtil;
 import com.roc.utils.ResultEnum;
 import com.roc.vo.UserVo;
@@ -40,6 +36,8 @@ public class UserService implements UserDetailsService {
     private MapMarkMessageMapper mapMarkMessageMapper;
     @Autowired
     private ExperienceMapper experienceMapper;
+    @Autowired
+    private ReplyMapper replyMapper;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
 
@@ -134,6 +132,7 @@ public class UserService implements UserDetailsService {
         int i=0;
         if (type.equals(comm)) {
             i=experienceMapper.deletePojo(id);
+            replyMapper.deleteByExperienceId(id);
         } else if (type.equals(mark)) {
             i=mapMarkMessageMapper.deletePojo(id);
         } else {
