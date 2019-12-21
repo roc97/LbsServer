@@ -27,13 +27,15 @@ public class OSSClientUtil {
 	public static final Logger logger = LoggerFactory.getLogger(OSSClientUtil.class);
 	// endpoint
 	private String endpoint = "http://oss-cn-beijing.aliyuncs.com";
-	// accessKey
-	private String accessKeyId = "LTAI4FkFeaK7JRik2PyQ1GVt";
-	private String accessKeySecret = "NLfzbzeG3XNp1qrJkEkxPnLSjjWCwv";
+	/**
+	 * 以下需要自行配置
+	 */
+	private String accessKeyId = "xxxxx";
+	private String accessKeySecret = "xxxxx";
 	// 空间
-	private String bucketName = "lbs-pictures";
+	private String bucketName = "xxxxx";
 	// 文件存储目录
-	private String filedir = "images/";
+	private String filedir = "xxxxx/";
  
 	private OSSClient ossClient;
  
