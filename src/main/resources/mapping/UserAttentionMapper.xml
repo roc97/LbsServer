@@ -71,7 +71,8 @@
             e.create_time AS "createTime",
             e.title,
             e.content,
-            c.operate_type AS operateStatus
+            c.operate_type AS operateStatus,
+            e.image
             from user_attention a
             left join experience e
             on a.user_attention_id=e.user_id
