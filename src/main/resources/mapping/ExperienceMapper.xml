@@ -55,20 +55,21 @@
               e.content,
               e.like_num as "likeNum",
               e.unlike_num as "unlikeNum",
+              e.create_time AS "createTime",
               b.operate_type AS operateStatus
               from experience e
               left join sys_user u
               on e.user_id=u.user_id
               LEFT JOIN praise_or_disagree b
               ON (b.operate_object=#{operateObject}
-              AND b.operate_target=e.experience_id AND b.target_type='0')
-              order by e.create_time desc) c
+              AND b.operate_target=e.experience_id AND b.target_type='0')) c
               LEFT JOIN
           (SELECT
               a.experience_id,COUNT(*) replyCount
               FROM reply a
               GROUP BY a.experience_id) d
           ON c.commId=d.experience_id
+          ORDER BY rand()
     </select>
 
     <select id="getListByTitle" resultMap="BaseResultMap">

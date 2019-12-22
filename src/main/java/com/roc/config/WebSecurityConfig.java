@@ -97,8 +97,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         jr.put("token", token);
                         jr.put("user", map);
                         Object o = redisUtil.get(token);
+                        long day=60*60*24;
                         if (o != null) {
-                            redisUtil.expire(token, 60 * 60+redisUtil.getExpire(token));
+                            long expireTime=60*60+redisUtil.getExpire(token);
+                            if(expireTime>day){
+                                redisUtil.expire(token, day);
+                            }else {
+                                redisUtil.expire(token, expireTime);
+                            }
                         } else {
                             redisUtil.set(token, JsonUtil.obj2String(currentUser), 60 * 60);
                         }

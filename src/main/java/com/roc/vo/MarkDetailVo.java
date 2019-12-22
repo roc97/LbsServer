@@ -2,6 +2,8 @@ package com.roc.vo;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * @author Roc
  * @version 1.0
@@ -34,4 +36,6 @@ public class MarkDetailVo {
     private String title;
 
     private String content;
+
+    private Timestamp createTime;
 }

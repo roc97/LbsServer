@@ -48,13 +48,15 @@
         b.name,
         b.head_image as "headImage",
         m.title,
-        m.content
+        m.content,
+        m.create_time AS "createTime"
         from user_attention a
         left join map_mark_message m
         on a.user_attention_id=m.user_id
         left join sys_user b
         on m.user_id=b.user_id
         where a.user_id=#{userId}
+        ORDER BY m.create_time DESC
     </select>
 
     <select id="getCommListByUserId" resultType="com.roc.vo.ExperienceVo">
@@ -66,6 +68,7 @@
             e.unlike_num as "unlikeNum",
             b.name,
             b.head_image as "headImage",
+            e.create_time AS "createTime",
             e.title,
             e.content,
             c.operate_type AS operateStatus
@@ -77,13 +80,13 @@
             LEFT JOIN praise_or_disagree c
             ON (c.operate_object=#{userId}
             AND c.operate_target=e.experience_id AND c.target_type='0')
-            where a.user_id=#{userId}
-            ORDER BY e.create_time DESC) f
+            where a.user_id=#{userId}) f
             LEFT JOIN
             (SELECT a.experience_id,COUNT(*) replyCount
              FROM reply a
              GROUP BY a.experience_id) d
              ON f.commId=d.experience_id
+             ORDER BY f.createTime DESC
     </select>
 
 

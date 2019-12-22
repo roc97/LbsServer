@@ -34,6 +34,12 @@ public class UserUtil {
             //前端传过来的用户id与token里存储的不同
             throw new LbsServerException(ResultEnum.LOGIN_NO_AUTHORIZATION);
         }
-        redisUtil.expire(token, 60 * 60 +redisUtil.getExpire(token));
+        long day=60*60*24;
+        long expireTime=60*60+redisUtil.getExpire(token);
+        if(expireTime>day){
+            redisUtil.expire(token, day);
+        }else {
+            redisUtil.expire(token, expireTime);
+        }
     }
 }

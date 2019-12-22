@@ -28,7 +28,7 @@
       a.status,
       a.create_time,
       b.head_image,
-      b.user_name as name
+      b.name
     </sql>
 
     <insert id="insertPojo" parameterType="MapMarkMessage">
@@ -85,6 +85,7 @@
         ON (c.`user_attention_id`=a.`user_id`
         AND c.`user_id`=#{userId})
         where a.mark_id=#{markId}
+        ORDER BY RAND()
     </select>
 
     <select id="getAllList" resultType="com.roc.vo.MarkVo">
@@ -98,6 +99,7 @@
         from map_mark_message a
         left join sys_user b
         on a.user_id=b.user_id
+        ORDER BY RAND()
     </select>
 
     <select id="getListByStatus" resultMap="BaseResultMap">
