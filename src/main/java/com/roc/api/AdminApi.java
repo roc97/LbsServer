@@ -1,30 +1,20 @@
 package com.roc.api;
 
 import com.roc.exception.LbsServerException;
-import com.roc.pojo.MapMarkMessage;
 import com.roc.service.ExperienceService;
 import com.roc.service.MarkService;
 import com.roc.service.UserService;
 import com.roc.utils.JsonResult;
 import com.roc.utils.ResultEnum;
 import com.roc.utils.UserUtil;
-import com.roc.vo.ExperienceVo;
-import com.roc.vo.MarkCheckVo;
-import com.roc.vo.MarkVo;
-import com.roc.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,7 +99,7 @@ public class AdminApi {
     @RequestMapping(value = "/findMarkList", method = RequestMethod.POST)
     public JsonResult findMarkList(@RequestHeader("token") String token,
                                    @RequestParam("userId") int userId,
-                                   @RequestParam("selectedUserId") int selectedUserId) {
+                                   @RequestParam("selectedUserId") int selectedUserId) throws Exception {
         userUtil.checkToken(userId, token);
         Map<String, Object> map = markService.findMarkAdminData(selectedUserId);
         return JsonResult.ok(map);
