@@ -3,6 +3,7 @@ package com.roc.api;
 import com.roc.exception.LbsServerException;
 import com.roc.pojo.MapMarkMessage;
 import com.roc.service.MarkService;
+import com.roc.utils.HttpUtils;
 import com.roc.utils.JsonResult;
 import com.roc.utils.ResultEnum;
 import com.roc.utils.UserUtil;
@@ -72,7 +73,7 @@ public class MarkMessageApi {
     @RequestMapping(value = "/markDetail", method = RequestMethod.POST)
     public JsonResult markDetail(@RequestHeader("token") String token,
                                  @RequestParam("userId") int userId,
-                                 @RequestParam("markId") int markId) {
+                                 @RequestParam("markId") int markId){
         userUtil.checkToken(userId, token);
         Map<String, Object> map = markService.getDetailMessage(userId, markId);
         return JsonResult.ok(map);
