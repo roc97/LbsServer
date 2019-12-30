@@ -1,14 +1,9 @@
 package com.roc.api;
 
-import com.roc.exception.LbsServerException;
-import com.roc.pojo.MapMarkMessage;
 import com.roc.service.MarkService;
-import com.roc.utils.HttpUtils;
 import com.roc.utils.JsonResult;
 import com.roc.utils.ResultEnum;
 import com.roc.utils.UserUtil;
-import com.roc.vo.MarkVo;
-import com.roc.vo.PublicCheckVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -16,8 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -85,7 +78,7 @@ public class MarkMessageApi {
             @ApiImplicitParam(name = "userId", value = "用户Id", required = true)})
     @RequestMapping(value = "/popularMsg", method = RequestMethod.GET)
     public JsonResult popularMsg(@RequestHeader("token") String token,
-                                 @RequestParam("userId") int userId) {
+                                 @RequestParam("userId") int userId) throws Exception {
         userUtil.checkToken(userId, token);
         Map<String, Object> map = markService.schoolPublish();
         return JsonResult.ok(map);

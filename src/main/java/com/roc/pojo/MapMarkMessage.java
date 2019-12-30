@@ -52,4 +52,8 @@ public class MapMarkMessage implements Serializable {
      * 是否关注标记
      */
     private boolean attentionStatus;
+    /**
+     * 地址
+     */
+    private String address;
 }

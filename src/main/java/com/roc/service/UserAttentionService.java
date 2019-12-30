@@ -5,7 +5,6 @@ import com.roc.mapper.SysUserMapper;
 import com.roc.mapper.UserAttentionMapper;
 import com.roc.pojo.SysUser;
 import com.roc.pojo.UserAttention;
-import com.roc.utils.JsonResult;
 import com.roc.utils.ResultEnum;
 import com.roc.vo.ExperienceVo;
 import com.roc.vo.MarkDetailVo;
@@ -30,6 +29,8 @@ public class UserAttentionService {
     private UserAttentionMapper userAttentionMapper;
     @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private MarkService markService;
 
     public UserAttention getUserAttention(int userId,int followId){
         return userAttentionMapper.getPojo(userId,followId);
@@ -61,10 +62,15 @@ public class UserAttentionService {
      * @param userId
      * @return
      */
-     public Map<String,Object> getAttentionList(int userId){
+     public Map<String,Object> getAttentionList(int userId) throws Exception {
          Map<String,Object> result=new HashMap<>(16);
          Map<String, Object> map = new HashMap<>(16);
          List<MarkDetailVo> markListByUserId = userAttentionMapper.getMarkListByUserId(userId);
+         for (MarkDetailVo m : markListByUserId){
+             String coordinate=m.getLng()+","+m.getLat();
+             String address = markService.getAddress(coordinate);
+             m.setAddress(address);
+         }
          List<ExperienceVo> commListByUserId = userAttentionMapper.getCommListByUserId(userId);
          result.put("markList",markListByUserId);
          result.put("commList",commListByUserId);

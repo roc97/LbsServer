@@ -29,4 +29,6 @@ public class MarkVo {
     private String headImage;
 
     private String name;
+
+    private String address;
 }

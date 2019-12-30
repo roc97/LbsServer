@@ -11,10 +11,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
+
 import javax.net.ssl.SSLContext;
-import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -110,7 +108,7 @@ public class HttpUtils {
     }
 
 
-    public static CloseableHttpClient createSSLClientDefault() throws Exception {
+    private static CloseableHttpClient createSSLClientDefault() throws Exception {
 
         SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy(){
             //信任所有

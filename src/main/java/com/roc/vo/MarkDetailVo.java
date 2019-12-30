@@ -38,4 +38,6 @@ public class MarkDetailVo {
     private String content;
 
     private Timestamp createTime;
+
+    private String address;
 }

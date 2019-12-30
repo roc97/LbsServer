@@ -1,9 +1,5 @@
 package com.roc.api;
 
-import com.roc.exception.LbsServerException;
-import com.roc.pojo.SysUser;
-import com.roc.service.ExperienceService;
-import com.roc.service.MarkService;
 import com.roc.service.UserAttentionService;
 import com.roc.service.UserService;
 import com.roc.utils.JsonResult;
@@ -15,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -101,7 +96,7 @@ public class UserApi {
     @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "用户Id", required = true),
             @ApiImplicitParam(name = "token", value = "token令牌", required = true)})
     @RequestMapping(value = "/{userId}/attentionMsgList", method = RequestMethod.GET)
-    public JsonResult attentionMsgList(@PathVariable("userId") int userId, @RequestHeader("token") String token) {
+    public JsonResult attentionMsgList(@PathVariable("userId") int userId, @RequestHeader("token") String token) throws Exception {
         userUtil.checkToken(userId, token);
         Map<String, Object> map = userAttentionService.getAttentionList(userId);
         return JsonResult.ok(map);

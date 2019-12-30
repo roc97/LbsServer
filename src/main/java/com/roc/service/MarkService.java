@@ -1,11 +1,13 @@
 package com.roc.service;
 
+import com.google.gson.JsonParser;
 import com.roc.exception.LbsServerException;
 import com.roc.mapper.MapMarkMessageMapper;
 import com.roc.mapper.SysUserMapper;
+import com.roc.pojo.Constant;
 import com.roc.pojo.MapMarkMessage;
 import com.roc.pojo.SysUser;
-import com.roc.utils.DateUtil;
+import com.roc.utils.HttpUtils;
 import com.roc.utils.ResultEnum;
 import com.roc.vo.MarkCheckVo;
 import com.roc.vo.MarkVo;
@@ -113,13 +115,18 @@ public class MarkService {
         return map;
     }
 
-    public Map<String, Object> findMarkAdminData(int userId){
+    public Map<String, Object> findMarkAdminData(int userId) throws Exception {
         Map<String, Object> map = new HashMap<>(16);
         SysUser user = userMapper.getPojo(userId);
         if(user==null){
             throw new LbsServerException(ResultEnum.OPERATION_FAILURE);
         }
         List<MarkVo> result = messageMapper.getListByUserId(userId);
+        for (MarkVo m : result){
+            String coordinate=m.getLng()+","+m.getLat();
+            String address = getAddress(coordinate);
+            m.setAddress(address);
+        }
         map.put("status", HttpStatus.OK.value());
         map.put("count", result.size());
         map.put("msg", ResultEnum.OPERATION_SUCCESS.getMsg());
@@ -127,9 +134,14 @@ public class MarkService {
         return map;
     }
 
-    public Map<String, Object> schoolPublish(){
+    public Map<String, Object> schoolPublish() throws Exception {
         int successStatus = 1;
         List<MapMarkMessage> popularList = messageMapper.getListByStatus(successStatus);
+        for (MapMarkMessage m : popularList){
+            String coordinate=m.getLng()+","+m.getLat();
+            String address = getAddress(coordinate);
+            m.setAddress(address);
+        }
         Map<String, Object> map = new HashMap<>(16);
         map.put("count", popularList.size());
         map.put("result", popularList);
@@ -137,4 +149,10 @@ public class MarkService {
         return map;
     }
 
+    public String getAddress(String coordinate) throws Exception {
+        String url=Constant.MAP_URL_PREFIX+coordinate+Constant.MAP_URL_SUFFIX;
+        String json = HttpUtils.httpsGet(url);
+        String address = new JsonParser().parse(json).getAsJsonObject().get("regeocode").getAsJsonObject().get("formatted_address").toString();
+        return address.replaceAll("\"","");
+    }
 }
