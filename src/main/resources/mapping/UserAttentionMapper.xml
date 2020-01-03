@@ -88,6 +88,7 @@
              FROM reply a
              GROUP BY a.experience_id) d
              ON f.commId=d.experience_id
+             where f.commId is not null
              ORDER BY f.createTime DESC
     </select>
 
